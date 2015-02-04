@@ -11,7 +11,9 @@ Robot::Robot() :
 	stick0(js_0),
 	stick1(js_1),
 	myRobot(leftFrontDrive,leftBackDrive,rightFrontDrive,rightBackDrive),
-	lw(NULL)
+	lw(NULL),
+	window_motor(w_m),
+	lyft(lyfte)
 	/*
 	raw_0_x(0),
 	raw_1_x(0),
@@ -72,6 +74,17 @@ void Robot::TeleopPeriodic()
 	myRobot.ArcadeDrive(-nt_0_y,-nt_1_x);
 	strafeFrontDrive.Set(nt_0_x);
 	strafeBackDrive.Set(-nt_0_x);
+
+	if(js_1.GetRawButton(b_window_button))
+		window_motor.Set(0.6);
+	else
+		window_motor.Set(0.0);
+
+	if(js_0.GetRawButton(a_lyfte_button))
+		lyft.Set(0.6);
+	else
+		lyft.Set(0.0);
+
 }
 
 void Robot::TestPeriodic()

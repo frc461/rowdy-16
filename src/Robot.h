@@ -17,22 +17,19 @@ enum teh_talons {
 	t_fr = 2,
 	t_bl = 4,
 	t_bc = 3,
-	t_br = 1
-};
-
-enum teh_auxilary_stuffz_can {
-	lyfte = 0
-};
-enum teh_auxilary_stuffz {
+	t_br = 1,
+	lyfte = 9,
 	w_m = 6
 };
 
 enum js_a_buttons {
-	a_lyfte_button = 3
+	a_lyfte_button_down = 5,
+	a_lyfte_button_up = 4
 };
 
 enum js_b_buttons {
-	b_window_button = 3
+	b_window_button_out = 5,
+	b_window_button_in = 4
 };
 
 enum cs_a_buttons {
@@ -52,7 +49,7 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
 	SPEEDCONTROLCLASS window_motor;
-	CANTalonSRX lyft;
+	Victor lyft;
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 

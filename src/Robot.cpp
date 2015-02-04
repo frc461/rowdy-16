@@ -64,24 +64,28 @@ void Robot::TeleopPeriodic()
 	raw_0_y = stick0.GetY();
 	raw_1_y = stick1.GetY();
 
-	drive_speed_ain_value = ds->GetAnalogIn(2);
+	//drive_speed_ain_value = ds->GetAnalogIn(2);
 
-	nt_0_x = nullify(raw_0_x) * (drive_speed_ain_value / 5.0);
-	nt_1_x = nullify(raw_1_x) * (drive_speed_ain_value / 5.0);
-	nt_0_y = nullify(raw_0_y) * (drive_speed_ain_value / 5.0);
-	nt_1_y = nullify(raw_1_y) * (drive_speed_ain_value / 5.0);
+	nt_0_x = nullify(raw_0_x) /** (drive_speed_ain_value / 5.0)*/;
+	nt_1_x = nullify(raw_1_x) /** (drive_speed_ain_value / 5.0)*/;
+	nt_0_y = nullify(raw_0_y) /** (drive_speed_ain_value / 5.0)*/;
+	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
 	myRobot.ArcadeDrive(-nt_0_y,-nt_1_x);
 	strafeFrontDrive.Set(nt_0_x);
 	strafeBackDrive.Set(-nt_0_x);
 
-	if(js_1.GetRawButton(b_window_button))
-		window_motor.Set(0.6);
+	if(stick1.GetRawButton(b_window_button_out))
+		window_motor.Set(1);
+	else if(stick1.GetRawButton(b_window_button_in))
+		window_motor.Set(-1);
 	else
 		window_motor.Set(0.0);
 
-	if(js_0.GetRawButton(a_lyfte_button))
+	if(stick0.GetRawButton(a_lyfte_button_up))
 		lyft.Set(0.6);
+	else if(stick0.GetRawButton(a_lyfte_button_down))
+		lyft.Set(-0.6);
 	else
 		lyft.Set(0.0);
 

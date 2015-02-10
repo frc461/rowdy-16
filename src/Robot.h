@@ -11,7 +11,7 @@ enum joysticks {
 	cs_b = 3
 };
 
-enum teh_talons {
+enum talons {
 	t_fl = 5, //t = talon, f = front, l = left, c = center, r = right, b = back
 	t_fc = 0,
 	t_fr = 2,

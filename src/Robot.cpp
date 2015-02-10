@@ -1,19 +1,20 @@
 #include "WPILib.h"
 #include "Robot.h"
 
-Robot::Robot() :
+Robot::Robot():
+	 stick0(js_0),
+	stick1(js_1),
 	leftFrontDrive(t_fl),
 	leftBackDrive(t_bl),
 	rightFrontDrive(t_fr),
 	rightBackDrive(t_br),
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
-	stick0(js_0),
-	stick1(js_1),
-	myRobot(leftFrontDrive,leftBackDrive,rightFrontDrive,rightBackDrive),
-	lw(NULL),
 	window_motor(w_m),
-	lyft(lyfte)
+	lyft(ct_lift),
+	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
+	lw(NULL)
+
 	/*
 	raw_0_x(0),
 	raw_1_x(0),
@@ -33,6 +34,7 @@ double Robot::nullify(double n) {
 	if(n < DEADZONE && n > -DEADZONE) {
 		return 0.0;
 	}
+
 	return n;
 }
 
@@ -68,7 +70,7 @@ void Robot::TeleopPeriodic()
 
 	nt_0_x = nullify(raw_0_x) /** (drive_speed_ain_value / 5.0)*/;
 	nt_1_x = nullify(raw_1_x) /** (drive_speed_ain_value / 5.0)*/;
-	nt_0_y = nullify(raw_0_y) /** (drive_speed_ain_value / 5.0)*/;
+	nt_0_y = -1 * nullify(raw_0_y) /** (drive_speed_ain_value / 5.0)*/;
 	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
 	myRobot.ArcadeDrive(-nt_0_y,-nt_1_x);

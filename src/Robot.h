@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 #define SPEEDCONTROLCLASS Talon
-#define DEADZONE 0.06
+#define DEADZONE 0.3
 
 enum joysticks {
 	js_0 = 0, //js = joy stick
@@ -18,8 +18,11 @@ enum teh_talons {
 	t_bl = 4,
 	t_bc = 3,
 	t_br = 1,
-	lyfte = 9,
 	w_m = 6
+};
+
+enum can_bus {
+	ct_lift = 1
 };
 
 enum js_a_buttons {
@@ -49,7 +52,7 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
 	SPEEDCONTROLCLASS window_motor;
-	Victor lyft;
+	CANTalon lyft;
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 

@@ -2,7 +2,7 @@
 #include "Robot.h"
 
 Robot::Robot():
-	 stick0(js_0),
+	stick0(js_0),
 	stick1(js_1),
 	leftFrontDrive(t_fl),
 	leftBackDrive(t_bl),
@@ -12,7 +12,7 @@ Robot::Robot():
 	strafeBackDrive(t_bc),
 	window_motor(w_m),
 	roller_motor(t_rol),
-	lyft(ct_lift),
+	lift(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL)
 
@@ -85,12 +85,13 @@ void Robot::TeleopPeriodic()
 	else
 		window_motor.Set(0.0);
 
-	if(stick0.GetRawButton(a_lyfte_button_up))
-		lyft.Set(0.6);
-	else if(stick0.GetRawButton(a_lyfte_button_down))
-		lyft.Set(-0.6);
+	// Consider tweaking this stuff.
+	if(stick0.GetRawButton(a_lifte_button_up))
+		lift.Set(0.6);
+	else if(stick0.GetRawButton(a_lifte_button_down))
+		lift.Set(-0.2);
 	else
-		lyft.Set(0.0);
+		lift.Set(0.0);
 
 	if (stick0.GetRawButton(a_roller_button_in))
 		roller_motor.Set(1.0);

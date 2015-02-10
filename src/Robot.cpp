@@ -2,15 +2,17 @@
 #include "Robot.h"
 
 Robot::Robot():
-	stick0(js_0),
-	stick1(js_1),
+	stick0(js_a),
+	stick1(js_b),
+	control_system_a(js_cs_a),
+	control_system_b(js_cs_b),
 	leftFrontDrive(t_fl),
 	leftBackDrive(t_bl),
 	rightFrontDrive(t_fr),
 	rightBackDrive(t_br),
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
-	window_motor(w_m),
+	window_motor(t_w),
 	roller_motor(t_rol),
 	lift(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
@@ -78,24 +80,24 @@ void Robot::TeleopPeriodic()
 	strafeFrontDrive.Set(nt_0_x);
 	strafeBackDrive.Set(-nt_0_x);
 
-	if(stick1.GetRawButton(b_window_button_out))
+	if (control_system_a.GetRawButton(a_clamp_in))
 		window_motor.Set(1.0);
-	else if(stick1.GetRawButton(b_window_button_in))
+	else if (control_system_a.GetRawButton(a_clamp_out))
 		window_motor.Set(-1.0);
 	else
 		window_motor.Set(0.0);
 
 	// Consider tweaking this stuff.
-	if(stick0.GetRawButton(a_lifte_button_up))
+	if (control_system_b.GetRawButton(b_lift_up))
 		lift.Set(0.6);
-	else if(stick0.GetRawButton(a_lifte_button_down))
+	else if (control_system_b.GetRawButton(b_lift_down))
 		lift.Set(-0.2);
 	else
 		lift.Set(0.0);
 
-	if (stick0.GetRawButton(a_roller_button_in))
+	if (control_system_a.GetRawButton(a_roller_in))
 		roller_motor.Set(1.0);
-	else if (stick0.GetRawButton(a_roller_button_out))
+	else if (control_system_a.GetRawButton(a_roller_out))
 		roller_motor.Set(-1.0);
 	else
 		roller_motor.Set(0.0);

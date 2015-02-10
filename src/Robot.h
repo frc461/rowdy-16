@@ -15,10 +15,10 @@
 #define DEADZONE 0.3
 
 enum joysticks {
-	js_0 = 0, //js = joy stick
-	js_1 = 1,
-	cs_a = 2, //cs = control stick it's the word for the button-y fake joysticks
-	cs_b = 3
+	js_a = 0, //js = joy stick
+	js_b = 1,
+	js_cs_a = 2, //cs = control stick it's the word for the button-y fake joysticks
+	js_cs_b = 3
 };
 
 enum talons {
@@ -28,7 +28,7 @@ enum talons {
 	t_bl = 4,
 	t_bc = 3,
 	t_br = 1,
-	w_m = 6,
+	t_w = 6,
 	t_rol = 7
 };
 
@@ -41,27 +41,30 @@ enum can_bus {
 };
 
 enum js_a_buttons {
-	a_lifte_button_down = 5,
-	a_lifte_button_up = 4,
-	a_roller_button_in = 2,
-	a_roller_button_out = 3
 };
 
 enum js_b_buttons {
-	b_window_button_out = 5,
-	b_window_button_in = 4
 };
 
+// Please test these buttons!
 enum cs_a_buttons {
+	a_clamp_in = 9,
+	a_clamp_out = 10,
+	a_roller_in = 12,
+	a_roller_out = 11
 };
 
-enum cs_b_buttons{
+enum cs_b_buttons {
+	b_lift_up = 2,
+	b_lift_down = 3
 };
 
 class Robot: public IterativeRobot
 {
 	Joystick stick0; // only joystick
 	Joystick stick1; // only joystick
+	Joystick control_system_a;
+	Joystick control_system_b;
 	SPEEDCONTROLCLASS leftFrontDrive;
 	SPEEDCONTROLCLASS leftBackDrive;
 	SPEEDCONTROLCLASS rightFrontDrive;
@@ -83,8 +86,6 @@ class Robot: public IterativeRobot
 	double nt_1_x;
 	double nt_0_y;
 	double nt_1_y;
-
-	float drive_speed_ain_value;
 
  public:
 	Robot();

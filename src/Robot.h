@@ -1,7 +1,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#define SPEEDCONTROLCLASS Talon
+// changes to Talon for other thing
+#define SPEEDCONTROLCLASS Jaguar
+// changes to CANTalon for other thing
+#define SPECIALCONTROLCLASS Victor
 #define DEADZONE 0.3
 
 enum joysticks {
@@ -18,16 +21,20 @@ enum talons {
 	t_bl = 4,
 	t_bc = 3,
 	t_br = 1,
-	w_m = 6
+	w_m = 6,
+	t_rol = 7
 };
 
 enum can_bus {
-	ct_lift = 1
+	// changes to 1 for other thing
+	ct_lift = 9
 };
 
 enum js_a_buttons {
 	a_lyfte_button_down = 5,
-	a_lyfte_button_up = 4
+	a_lyfte_button_up = 4,
+	a_roller_button_in = 2,
+	a_roller_button_out = 3
 };
 
 enum js_b_buttons {
@@ -52,7 +59,8 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
 	SPEEDCONTROLCLASS window_motor;
-	CANTalon lyft;
+	SPEEDCONTROLCLASS roller_motor;
+	SPECIALCONTROLCLASS lyft;
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 

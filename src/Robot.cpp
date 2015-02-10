@@ -11,6 +11,7 @@ Robot::Robot():
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
 	window_motor(w_m),
+	roller_motor(t_rol),
 	lyft(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL)
@@ -78,9 +79,9 @@ void Robot::TeleopPeriodic()
 	strafeBackDrive.Set(-nt_0_x);
 
 	if(stick1.GetRawButton(b_window_button_out))
-		window_motor.Set(1);
+		window_motor.Set(1.0);
 	else if(stick1.GetRawButton(b_window_button_in))
-		window_motor.Set(-1);
+		window_motor.Set(-1.0);
 	else
 		window_motor.Set(0.0);
 
@@ -90,6 +91,13 @@ void Robot::TeleopPeriodic()
 		lyft.Set(-0.6);
 	else
 		lyft.Set(0.0);
+
+	if (stick0.GetRawButton(a_roller_button_in))
+		roller_motor.Set(1.0);
+	else if (stick0.GetRawButton(a_roller_button_out))
+		roller_motor.Set(-1.0);
+	else
+		roller_motor.Set(0.0);
 
 }
 

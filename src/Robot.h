@@ -41,9 +41,19 @@ enum can_bus {
 };
 
 enum js_a_buttons {
+	js_a_lift_down = 2,
+	js_a_lift_up = 3,
+	js_a_roller_out = 4,
+	js_a_roller_in = 5
 };
 
 enum js_b_buttons {
+	js_b_clamp_in = 4,
+	js_b_clamp_out = 5
+};
+
+enum sensors {
+	color = 0x29
 };
 
 // Please test these buttons!
@@ -57,6 +67,11 @@ enum cs_a_buttons {
 enum cs_b_buttons {
 	b_lift_up = 2,
 	b_lift_down = 3
+};
+
+enum digital_input {
+	di_min = 0,
+	di_max = 1
 };
 
 class Robot: public IterativeRobot
@@ -76,6 +91,8 @@ class Robot: public IterativeRobot
 	SPECIALCONTROLCLASS lift;
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
+	DigitalInput min_pos_switch;
+	DigitalInput max_pos_switch;
 
 	double raw_0_x; //the raw values
 	double raw_1_x;

@@ -224,14 +224,6 @@ void Robot::TeleopPeriodic()
 	else
 		roller_motor.Set(0.0);
 	UpdateSDB();
-
-	// Changes every second.
-/*	if (((int) (timer.Get())) % 2 == 0) {
-		ratchet.Set(0.5);
-	}
-	else {
-		ratchet.Set(-0.5);
-	}*/
 }
 
 void Robot::TestPeriodic()

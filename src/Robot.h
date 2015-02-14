@@ -81,7 +81,9 @@ enum digital_io {
 	dio_bu = 4,
 	dio_bv = 5,
 	dio_fu = 6,
-	dio_fv = 7
+	dio_fv = 7,
+	dio_lu = 8,
+	dio_lv = 9
 };
 
 class Robot: public IterativeRobot
@@ -106,6 +108,7 @@ class Robot: public IterativeRobot
 	Encoder left_drive;
 	Encoder back_strafe;
 	Encoder front_strafe;
+	Encoder lift_turney;
 
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;

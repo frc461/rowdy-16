@@ -26,7 +26,8 @@ Robot::Robot():
 	right_drive(dio_rdu, dio_rdv),
 	left_drive(dio_ldu, dio_ldv),
 	back_strafe(dio_bu, dio_bv),
-	front_strafe(dio_fu, dio_fv)
+	front_strafe(dio_fu, dio_fv),
+	lift_turney(dio_lu, dio_lv)
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
@@ -141,6 +142,7 @@ void Robot::TeleopPeriodic()
 		roller_motor.Set(-1.0);
 	else
 		roller_motor.Set(0.0);
+	UpdateSDB();
 
 	// Changes every second.
 /*	if (((int) (timer.Get())) % 2 == 0) {
@@ -161,6 +163,7 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Left Drive Encoder", left_drive.Get());
 	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
 	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
+	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
 }
 
 START_ROBOT_CLASS(Robot);

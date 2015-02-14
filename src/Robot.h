@@ -111,9 +111,9 @@ class Robot: public IterativeRobot
 	double nt_0_y;
 	double nt_1_y;
 
- public:
+public:
 	Robot();
- private:
+private:
 	double nullify(double n);
 	void RobotInit();
 	void AutonomousInit();

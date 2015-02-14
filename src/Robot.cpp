@@ -26,15 +26,15 @@ Robot::Robot():
 	timer()
 
 	/*
-	raw_0_x(0),
-	raw_1_x(0),
-	raw_0_y(0),
-	raw_1_y(0),
+	  raw_0_x(0),
+	  raw_1_x(0),
+	  raw_0_y(0),
+	  raw_1_y(0),
 
-	nt_0_x(0),
-	nt_1_x(0),
-	nt_0_y(0),
-	nt_1_y(0)
+	  nt_0_x(0),
+	  nt_1_x(0),
+	  nt_0_y(0),
+	  nt_1_y(0)
 	*/
 {
 	myRobot.SetExpiration(0.1);

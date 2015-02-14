@@ -21,21 +21,12 @@ Robot::Robot():
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
 //	color_sensor(I2C::kOnboard, color),
-	min_pos_switch(di_min),
-	max_pos_switch(di_max),
-	timer()
-
-	/*
-	raw_0_x(0),
-	raw_1_x(0),
-	raw_0_y(0),
-	raw_1_y(0),
-
-	nt_0_x(0),
-	nt_1_x(0),
-	nt_0_y(0),
-	nt_1_y(0)
-	*/
+//	min_pos_switch(di_min),
+//	max_pos_switch(di_max),
+	right_drive(dio_rdu, dio_rdv),
+	left_drive(dio_ldu, dio_ldv),
+	back_strafe(dio_bu, dio_bv),
+	front_strafe(dio_fu, dio_fv)
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
@@ -68,7 +59,7 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-	timer.Start();
+//	timer.Start();
 }
 
 void Robot::TeleopPeriodic()
@@ -100,9 +91,9 @@ void Robot::TeleopPeriodic()
 		window_motor.Set(0.0);
 
 	// Consider tweaking this stuff.
-	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) && !max_pos_switch.Get())
+	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !max_pos_switch.Get()*/)
 		lift.Set(0.6);
-	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !min_pos_switch.Get())
+	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down))/* && !min_pos_switch.Get()*/)
 		lift.Set(-0.2);
 	else
 		lift.Set(0.0);
@@ -115,12 +106,12 @@ void Robot::TeleopPeriodic()
 		roller_motor.Set(0.0);
 
 	// Changes every second.
-	if (((int) (timer.Get())) % 2 == 0) {
+/*	if (((int) (timer.Get())) % 2 == 0) {
 		ratchet.Set(0.5);
 	}
 	else {
 		ratchet.Set(-0.5);
-	}
+	}*/
 }
 
 void Robot::TestPeriodic()
@@ -128,5 +119,11 @@ void Robot::TestPeriodic()
 	lw->Run();
 }
 
+void Robot::UpdateSDB() {
+	SmartDashboard::PutNumber("Right Drive Encoder", right_drive.Get());
+	SmartDashboard::PutNumber("Left Drive Encoder", left_drive.Get());
+	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
+	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
+}
 
 START_ROBOT_CLASS(Robot);

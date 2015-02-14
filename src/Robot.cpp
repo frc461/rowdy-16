@@ -49,6 +49,7 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
+	// See the paper "plan"; each code paragraph is supposed to correspond to a step.
 	if (THREE_AUTON) {
 		// 3 tote in auto zone
 		// Working on the first tote.

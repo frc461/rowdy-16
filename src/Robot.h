@@ -73,9 +73,15 @@ enum cs_b_buttons {
 	b_lift_down = 3
 };
 
-enum digital_input {
-	di_min = 0,
-	di_max = 1
+enum digital_io {
+	dio_rdu = 0, //r = right l = left d = drive f = front b = back u = a v = b
+	dio_rdv = 1,
+	dio_ldu = 2,
+	dio_ldv = 3,
+	dio_bu = 4,
+	dio_bv = 5,
+	dio_fu = 6,
+	dio_fv = 7
 };
 
 class Robot: public IterativeRobot
@@ -96,11 +102,16 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS ratchet;
 	SPECIALCONTROLCLASS lift;
 
+	Encoder right_drive;
+	Encoder left_drive;
+	Encoder back_strafe;
+	Encoder front_strafe;
+
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
-	DigitalInput min_pos_switch;
-	DigitalInput max_pos_switch;
-	// Timer timer;
+//	DigitalInput min_pos_switch;
+//	DigitalInput max_pos_switch;
+//	Timer timer;
 
 	double lift_pos;
 
@@ -124,6 +135,7 @@ private:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void TestPeriodic();
+	void UpdateSDB();
 };
 
 #endif

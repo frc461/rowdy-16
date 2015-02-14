@@ -4,8 +4,8 @@
 // Comment this out if you are not using the practice robot.
 //#define PRACTICE 1
 
-// Comment this to use the other auton.
-//#define THREE_AUTON 1
+// Set this to false to use the other auton.
+const bool THREE_AUTON = true;
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar

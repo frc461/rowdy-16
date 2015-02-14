@@ -58,12 +58,51 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
+	if (THREE_AUTON) {
+		// 3 tote in auto zone
+	} else {
+		// 1 tote + 1 bin in auto zone
+		roller_motor.Set(1.0);
+		Wait(0.2);
 
+		myRobot.ArcadeDrive(0.8, 0.0);
+		Wait(0.5);
+
+		myRobot.ArcadeDrive(0.0, 0.0);
+		lift.Set(0.6);
+		Wait(0.5);
+
+		myRobot.ArcadeDrive(0.8, 0.0);
+		Wait(0.5);
+
+		myRobot.ArcadeDrive(0.0, 0.0);
+		lift.Set(-0.2);
+		Wait(0.2);
+
+		lift.Set(0.0);
+		myRobot.ArcadeDrive(0.0, 0.5);
+		Wait(0.3);
+
+		myRobot.ArcadeDrive(0.8, 0.0);
+		Wait(0.5);
+	
+		roller_motor.Set(-1.0);
+		Wait(0.5);
+		
+		strafeFrontDrive.Set(0.5);
+		strafeBackDrive.Set(-0.5);
+		Wait(0.5);
+
+		myRobot.ArcadeDrive(0.8, 0.0);
+		Wait(0.5);
+
+		roller_motor.Set(0.0);
+	}
 }
 
 void Robot::AutonomousPeriodic()
 {
-	roller_motor.Set(1.0);
+	
 }
 
 void Robot::TeleopInit()
@@ -86,7 +125,7 @@ void Robot::TeleopPeriodic()
 	nt_0_y = -nullify(raw_0_y) /** (drive_speed_ain_value / 5.0)*/;
 	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
-	myRobot.ArcadeDrive(-nt_0_y,-nt_1_x);
+	myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
 	strafeFrontDrive.Set(nt_0_x);
 	strafeBackDrive.Set(-nt_0_x);
 

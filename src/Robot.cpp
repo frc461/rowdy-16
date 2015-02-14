@@ -73,8 +73,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-
-
 	//get the raw values
 	raw_0_x = stick0.GetX();
 	raw_1_x = stick1.GetX();
@@ -127,6 +125,5 @@ void Robot::TestPeriodic()
 {
 	lw->Run();
 }
-
 
 START_ROBOT_CLASS(Robot);

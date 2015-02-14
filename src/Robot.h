@@ -4,6 +4,9 @@
 // Comment this out if you are not using the practice robot.
 //#define PRACTICE 1
 
+// Comment this to use the other auton.
+//#define THREE_AUTON 1
+
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
 	#define SPECIALCONTROLCLASS Victor
@@ -97,7 +100,7 @@ class Robot: public IterativeRobot
 	LiveWindow *lw;
 	DigitalInput min_pos_switch;
 	DigitalInput max_pos_switch;
-	Timer timer;
+	// Timer timer;
 
 	double lift_pos;
 

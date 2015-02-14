@@ -63,12 +63,12 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-
+	roller_motor.Set(1.0);
 }
 
 void Robot::TeleopInit()
 {
-	timer.Start();
+	// timer.Start();
 }
 
 void Robot::TeleopPeriodic()
@@ -113,12 +113,12 @@ void Robot::TeleopPeriodic()
 		roller_motor.Set(0.0);
 
 	// Changes every second.
-	if (((int) (timer.Get())) % 2 == 0) {
-		ratchet.Set(0.5);
-	}
-	else {
-		ratchet.Set(-0.5);
-	}
+	// if (((int) (timer.Get())) % 2 == 0) {
+	// 	ratchet.Set(0.5);
+	// }
+	// else {
+	// 	ratchet.Set(-0.5);
+	// }
 }
 
 void Robot::TestPeriodic()

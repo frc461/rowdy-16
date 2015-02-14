@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 // Comment this out if you are not using the practice robot.
-#define PRACTICE 1
+//#define PRACTICE 1
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
@@ -21,7 +21,7 @@ enum joysticks {
 	js_cs_b = 3
 };
 
-enum talons {
+enum p_w_m {
 	t_fl = 5, //t = talon, f = front, l = left, c = center, r = right, b = back
 	t_fc = 0,
 	t_fr = 2,
@@ -29,7 +29,8 @@ enum talons {
 	t_bc = 3,
 	t_br = 1,
 	t_w = 6,
-	t_rol = 7
+	t_rol = 7,
+	t_ratchet = 9
 };
 
 enum can_bus {
@@ -80,19 +81,25 @@ class Robot: public IterativeRobot
 	Joystick stick1; // only joystick
 	Joystick control_system_a;
 	Joystick control_system_b;
+
 	SPEEDCONTROLCLASS leftFrontDrive;
 	SPEEDCONTROLCLASS leftBackDrive;
 	SPEEDCONTROLCLASS rightFrontDrive;
 	SPEEDCONTROLCLASS rightBackDrive;
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
-	SPEEDCONTROLCLASS window_motor;
 	SPEEDCONTROLCLASS roller_motor;
+	SPEEDCONTROLCLASS window_motor;
+	SPEEDCONTROLCLASS ratchet;
 	SPECIALCONTROLCLASS lift;
+
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 	DigitalInput min_pos_switch;
 	DigitalInput max_pos_switch;
+	Timer timer;
+
+	double lift_pos;
 
 	double raw_0_x; //the raw values
 	double raw_1_x;

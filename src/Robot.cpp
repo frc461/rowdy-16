@@ -1,26 +1,29 @@
 #include "WPILib.h"
 #include "Robot.h"
-#include "I2C.h"
+//#include "I2C.h"
 
 Robot::Robot():
 	stick0(js_a),
 	stick1(js_b),
 	control_system_a(js_cs_a),
 	control_system_b(js_cs_b),
+
 	leftFrontDrive(t_fl),
 	leftBackDrive(t_bl),
 	rightFrontDrive(t_fr),
 	rightBackDrive(t_br),
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
-	window_motor(t_w),
 	roller_motor(t_rol),
+	window_motor(t_w),
+	ratchet(t_ratchet),
 	lift(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
-	color_sensor(I2C::kOnboard, color),
+//	color_sensor(I2C::kOnboard, color),
+	min_pos_switch(di_min),
 	max_pos_switch(di_max),
-	min_pos_switch(di_min)
+	timer()
 
 	/*
 	raw_0_x(0),
@@ -36,6 +39,7 @@ Robot::Robot():
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
+	lift_pos = 0;
 //	color_sensor.Write(0x00,0x00);
 }
 
@@ -64,11 +68,13 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-
+	timer.Start();
 }
 
 void Robot::TeleopPeriodic()
 {
+
+
 	//get the raw values
 	raw_0_x = stick0.GetX();
 	raw_1_x = stick1.GetX();
@@ -107,12 +113,14 @@ void Robot::TeleopPeriodic()
 		roller_motor.Set(-1.0);
 	else
 		roller_motor.Set(0.0);
-//	color_sensor.Write(0x16,0x00);
-//	uint8_t r;
-//	uint8_t reg = 0x16;
-//	uint8_t bytes = 0x02;
-//	color_sensor.Read(reg,bytes,&r);
-//	SmartDashboard::PutNumber("Red",r);
+
+	// Changes every second.
+	if (((int) (timer.Get())) % 2 == 0) {
+		ratchet.Set(0.5);
+	}
+	else {
+		ratchet.Set(-0.5);
+	}
 }
 
 void Robot::TestPeriodic()

@@ -46,6 +46,10 @@ double Robot::nullify(double n) {
 void Robot::RobotInit()
 {
 	lw = LiveWindow::GetInstance();
+
+	CameraServer::GetInstance()->SetQuality(50);
+	// "cameraname" needs to be changed
+	CameraServer::GetInstance()->StartAutomaticCapture("cameraName");
 }
 
 void Robot::AutonomousInit()

@@ -25,14 +25,15 @@ enum joysticks {
 };
 
 enum p_w_m {
-	t_fl = 5, //t = talon, f = front, l = left, c = center, r = right, b = back
+	t_fl = 5, //t = talon, f = front, l = left, c = center, r = right, b = back, rl = roller, tun = tunnel
 	t_fc = 0,
 	t_fr = 2,
 	t_bl = 4,
 	t_bc = 3,
 	t_br = 1,
-	t_w = 6,
-	t_rol = 7,
+	t_frl_r = 6,
+	t_frl_l = 8,
+	t_tun_rol = 7,
 	t_ratchet = 9
 };
 
@@ -47,18 +48,18 @@ enum can_bus {
 enum js_a_buttons {
 	js_a_lift_down = 2,
 	js_a_lift_up = 3,
-	js_a_roller_out = 4,
-	js_a_roller_in = 5
+	js_a_tun_roller_out = 4,
+	js_a_tun_roller_in = 5
 };
 
 enum js_b_buttons {
-	js_b_clamp_in = 4,
-	js_b_clamp_out = 5
+	js_b_f_rol_in = 4,
+	js_b_f_rol_out = 5
 };
 
-enum sensors {
+/*enum sensors {
 	color = 0x29
-};
+};*/
 
 // Please test these buttons!
 enum cs_a_buttons {
@@ -86,6 +87,11 @@ enum digital_io {
 	dio_lv = 9
 };
 
+enum analog_in {
+	top_switch = 1,
+	bot_switch = 0
+};
+
 class Robot: public IterativeRobot
 {
 	Joystick stick0; // only joystick
@@ -99,8 +105,9 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS rightBackDrive;
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
-	SPEEDCONTROLCLASS roller_motor;
-	SPEEDCONTROLCLASS window_motor;
+	SPEEDCONTROLCLASS tunnel_roller_motor;
+	SPEEDCONTROLCLASS front_roller_left;
+	SPEEDCONTROLCLASS front_roller_right;
 	SPEEDCONTROLCLASS ratchet;
 	SPECIALCONTROLCLASS lift;
 

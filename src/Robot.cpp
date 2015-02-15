@@ -14,8 +14,9 @@ Robot::Robot():
 	rightBackDrive(t_br),
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
-	roller_motor(t_rol),
-	window_motor(t_w),
+	tunnel_roller_motor(t_tun_rol),
+	front_roller_left(t_frl_l),
+	front_roller_right(t_frl_r),
 	ratchet(t_ratchet),
 	lift(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
@@ -58,7 +59,7 @@ void Robot::AutonomousInit()
 	if (THREE_AUTON) {
 		// 3 tote in auto zone
 		// Working on the first tote.
-		roller_motor.Set(1.0);
+		tunnel_roller_motor.Set(1.0);
 		Wait(0.2);
 		
 		myRobot.ArcadeDrive(0.8, 0.0);
@@ -130,14 +131,14 @@ void Robot::AutonomousInit()
 		lift.Set(-0.2);
 		Wait(0.2);
 
-		roller_motor.Set(-1.0);
+		tunnel_roller_motor.Set(-1.0);
 		Wait(1.0);
 
 		lift.Set(0.0);
-		roller_motor.Set(0.0);
+		tunnel_roller_motor.Set(0.0);
 	} else {
 		// 1 tote + 1 bin in auto zone
-		roller_motor.Set(1.0);
+		tunnel_roller_motor.Set(1.0);
 		Wait(0.2);
 
 		myRobot.ArcadeDrive(0.8, 0.0);
@@ -161,7 +162,7 @@ void Robot::AutonomousInit()
 		myRobot.ArcadeDrive(0.8, 0.0);
 		Wait(0.5);
 	
-		roller_motor.Set(-1.0);
+		tunnel_roller_motor.Set(-1.0);
 		Wait(0.5);
 		
 		strafeFrontDrive.Set(0.5);
@@ -173,7 +174,7 @@ void Robot::AutonomousInit()
 		myRobot.ArcadeDrive(0.8, 0.0);
 		Wait(0.5);
 
-		roller_motor.Set(0.0);
+		tunnel_roller_motor.Set(0.0);
 	}
 }
 
@@ -206,12 +207,7 @@ void Robot::TeleopPeriodic()
 	strafeFrontDrive.Set(nt_0_x);
 	strafeBackDrive.Set(-nt_0_x);
 
-	if (control_system_a.GetRawButton(a_clamp_in) || stick1.GetRawButton(js_b_clamp_in))
-		window_motor.Set(1.0);
-	else if (control_system_a.GetRawButton(a_clamp_out) || stick1.GetRawButton(js_b_clamp_out))
-		window_motor.Set(-1.0);
-	else
-		window_motor.Set(0.0);
+
 
 	// Consider tweaking this stuff.
 	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !max_pos_switch.Get()*/)
@@ -221,12 +217,34 @@ void Robot::TeleopPeriodic()
 	else
 		lift.Set(0.0);
 
-	if (control_system_a.GetRawButton(a_roller_in) || stick0.GetRawButton(js_a_roller_in))
-		roller_motor.Set(1.0);
-	else if (control_system_a.GetRawButton(a_roller_out) || stick0.GetRawButton(js_a_roller_out))
-		roller_motor.Set(-1.0);
+	if (control_system_a.GetRawButton(a_roller_in) || stick0.GetRawButton(js_a_tun_roller_in))
+		tunnel_roller_motor.Set(1.0);
+	else if (control_system_a.GetRawButton(a_roller_out) || stick0.GetRawButton(js_a_tun_roller_out))
+		tunnel_roller_motor.Set(-1.0);
 	else
-		roller_motor.Set(0.0);
+		tunnel_roller_motor.Set(0.0);
+
+	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1)))) {
+		front_roller_left.Set(1.0);
+		front_roller_right.Set(-1.0);
+	}
+	else if (((stick1.GetRawButton(js_b_f_rol_out)) && !(stick1.GetRawButton(1)))) {
+		front_roller_left.Set(-1.0);
+		front_roller_right.Set(1.0);
+	}
+	else if (((stick1.GetRawButton(js_b_f_rol_in)) && (stick1.GetRawButton(1)))) {
+			front_roller_left.Set(1.0);
+			front_roller_right.Set(1.0);
+	}
+	else if (((stick1.GetRawButton(js_b_f_rol_out)) && (stick1.GetRawButton(1)))) {
+			front_roller_left.Set(-1.0);
+			front_roller_right.Set(-1.0);
+	}
+	else {
+		front_roller_left.Set(0.0);
+		front_roller_right.Set(0.0);
+	}
+
 	UpdateSDB();
 }
 

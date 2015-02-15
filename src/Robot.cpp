@@ -5,6 +5,7 @@
 Robot::Robot():
 	stick0(js_a),
 	stick1(js_b),
+
 	control_system_a(js_cs_a),
 	control_system_b(js_cs_b),
 
@@ -22,8 +23,8 @@ Robot::Robot():
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
 //	color_sensor(I2C::kOnboard, color),
-//	min_pos_switch(di_min),
-//	max_pos_switch(di_max),
+	min_pos_switch(an_top_switch),
+//	max_pos_switch(an_bot_switch),
 	right_drive(dio_rdu, dio_rdv),
 	left_drive(dio_ldu, dio_ldv),
 	back_strafe(dio_bu, dio_bv),
@@ -136,7 +137,20 @@ void Robot::AutonomousInit()
 
 		lift.Set(0.0);
 		tunnel_roller_motor.Set(0.0);
-	} else {
+	} else if (BORING){
+		do {
+		front_strafe.Reset();
+		back_strafe.Reset();
+		strafeFrontDrive.Set(0.8);
+		strafeBackDrive.Set(0.8);
+		} while ((front_strafe.Get() < 6.4) && (front_strafe.Get() > -6.4));
+		do {
+			right_drive.Reset();
+			left_drive.Reset();
+			myRobot.ArcadeDrive(0.8, 0.0);
+		} while ((right_drive.Get() < 3.8) && (right_drive.Get() > -3.8));
+
+	}else {
 		// 1 tote + 1 bin in auto zone
 		tunnel_roller_motor.Set(1.0);
 		Wait(0.2);
@@ -209,34 +223,36 @@ void Robot::TeleopPeriodic()
 
 
 
-	// Consider tweaking this stuff.
-	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !max_pos_switch.Get()*/)
+	// Lift Block
+	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !(max_pos_switch.GetVoltage() > 2.5)*/)
 		lift.Set(0.6);
-	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down))/* && !min_pos_switch.Get()*/)
+	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5))
 		lift.Set(-0.2);
 	else
 		lift.Set(0.0);
 
-	if (control_system_a.GetRawButton(a_roller_in) || stick0.GetRawButton(js_a_tun_roller_in))
+	//Tunnel Roller Block
+	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))
 		tunnel_roller_motor.Set(1.0);
-	else if (control_system_a.GetRawButton(a_roller_out) || stick0.GetRawButton(js_a_tun_roller_out))
+	else if (control_system_a.GetRawButton(a_tun_rol_out) || stick0.GetRawButton(js_a_tun_roller_out))
 		tunnel_roller_motor.Set(-1.0);
 	else
 		tunnel_roller_motor.Set(0.0);
 
-	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1)))) {
+	//Front Roller Block
+	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_in)) {
 		front_roller_left.Set(1.0);
 		front_roller_right.Set(-1.0);
 	}
-	else if (((stick1.GetRawButton(js_b_f_rol_out)) && !(stick1.GetRawButton(1)))) {
+	else if (((stick1.GetRawButton(js_b_f_rol_out)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_out)) {
 		front_roller_left.Set(-1.0);
 		front_roller_right.Set(1.0);
 	}
-	else if (((stick1.GetRawButton(js_b_f_rol_in)) && (stick1.GetRawButton(1)))) {
+	else if (((stick1.GetRawButton(js_b_f_rol_in)) && (stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_rotate_right)) {
 			front_roller_left.Set(1.0);
 			front_roller_right.Set(1.0);
 	}
-	else if (((stick1.GetRawButton(js_b_f_rol_out)) && (stick1.GetRawButton(1)))) {
+	else if (((stick1.GetRawButton(js_b_f_rol_out)) && (stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_rotate_left) ) {
 			front_roller_left.Set(-1.0);
 			front_roller_right.Set(-1.0);
 	}
@@ -244,6 +260,8 @@ void Robot::TeleopPeriodic()
 		front_roller_left.Set(0.0);
 		front_roller_right.Set(0.0);
 	}
+
+	ratchet.Set(90);
 
 	UpdateSDB();
 }
@@ -259,6 +277,7 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
 	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
 	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
+	SmartDashboard::PutNumber("Ratchet Servo", ratchet.Get());
 }
 
 START_ROBOT_CLASS(Robot);

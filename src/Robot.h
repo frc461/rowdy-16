@@ -5,7 +5,8 @@
 //#define PRACTICE 1
 
 // Set this to false to use the other auton.
-const bool THREE_AUTON = true;
+const bool THREE_AUTON = false;
+const bool BORING = true;
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
@@ -63,15 +64,17 @@ enum js_b_buttons {
 
 // Please test these buttons!
 enum cs_a_buttons {
-	a_clamp_in = 9,
-	a_clamp_out = 10,
-	a_roller_in = 12,
-	a_roller_out = 11
+	a_tun_rol_in = 8,
+	a_tun_rol_out = 7,
+	a_f_rol_rotate_left = 9,
+	a_f_rol_rotate_right = 10,
+	a_f_rol_in = 12,
+	a_f_rol_out = 11
 };
 
 enum cs_b_buttons {
-	b_lift_up = 2,
-	b_lift_down = 3
+	b_lift_up = 3,
+	b_lift_down = 2
 };
 
 enum digital_io {
@@ -88,8 +91,8 @@ enum digital_io {
 };
 
 enum analog_in {
-	top_switch = 1,
-	bot_switch = 0
+	an_top_switch = 1, //an = analog
+	an_bot_switch = 0
 };
 
 class Robot: public IterativeRobot
@@ -108,7 +111,7 @@ class Robot: public IterativeRobot
 	SPEEDCONTROLCLASS tunnel_roller_motor;
 	SPEEDCONTROLCLASS front_roller_left;
 	SPEEDCONTROLCLASS front_roller_right;
-	SPEEDCONTROLCLASS ratchet;
+	Servo ratchet;
 	SPECIALCONTROLCLASS lift;
 
 	Encoder right_drive;
@@ -119,8 +122,8 @@ class Robot: public IterativeRobot
 
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
-//	DigitalInput min_pos_switch;
-//	DigitalInput max_pos_switch;
+	AnalogInput min_pos_switch;
+//	AnalogInput max_pos_switch;
 //	Timer timer;
 
 	double lift_pos;

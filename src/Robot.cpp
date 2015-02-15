@@ -227,7 +227,7 @@ void Robot::TeleopPeriodic()
 	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !(max_pos_switch.GetVoltage() > 2.5)*/)
 		lift.Set(0.6);
 	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5))
-		lift.Set(-0.2);
+		lift.Set(-0.4);
 	else
 		lift.Set(0.0);
 
@@ -261,7 +261,10 @@ void Robot::TeleopPeriodic()
 		front_roller_right.Set(0.0);
 	}
 
-	ratchet.Set(90);
+	if(control_system_a.GetRawButton(3))
+		ratchet.SetAngle(180);
+	if(control_system_a.GetRawButton(4))
+		ratchet.SetAngle(270);
 
 	UpdateSDB();
 }
@@ -277,7 +280,7 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
 	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
 	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
-	SmartDashboard::PutNumber("Ratchet Servo", ratchet.Get());
+	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
 }
 
 START_ROBOT_CLASS(Robot);

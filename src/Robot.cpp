@@ -235,10 +235,11 @@ void Robot::TeleopPeriodic()
 	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) && !(max_pos_switch.GetVoltage() > 2.5)) {
 		if(stupidTimer == false && stupidRatchet != UP){
 			timer.Reset();
+			timer.Start();
 			stupidTimer = true;
 			ratchet.Set(-1.0);
 		}
-		else if(stupidTimer == true && timer.Get() > 500) {
+		else if(stupidTimer == true && timer.Get() > 0.5) {
 			timer.Stop();
 			stupidTimer = false;
 			stupidRatchet = UP;
@@ -248,10 +249,11 @@ void Robot::TeleopPeriodic()
 	}else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5)) {
 		if(stupidTimer == false && stupidRatchet != DOWN){
 			timer.Reset();
+			timer.Start();
 			stupidTimer = true;
 			ratchet.Set(1.0);
 		}
-		else if(stupidTimer == true && timer.Get() > 500) {
+		else if(stupidTimer == true && timer.Get() > 0.5) {
 			timer.Stop();
 			stupidTimer = false;
 			stupidRatchet = DOWN;

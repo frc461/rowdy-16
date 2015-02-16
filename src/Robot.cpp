@@ -24,12 +24,13 @@ Robot::Robot():
 	lw(NULL),
 //	color_sensor(I2C::kOnboard, color),
 	min_pos_switch(an_top_switch),
-//	max_pos_switch(an_bot_switch),
+	max_pos_switch(an_bot_switch),
 	right_drive(dio_rdu, dio_rdv),
 	left_drive(dio_ldu, dio_ldv),
 	back_strafe(dio_bu, dio_bv),
 	front_strafe(dio_fu, dio_fv),
-	lift_turney(dio_lu, dio_lv)
+	lift_turney(dio_lu, dio_lv),
+	timer()
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
@@ -48,6 +49,9 @@ double Robot::nullify(double n) {
 void Robot::RobotInit()
 {
 	lw = LiveWindow::GetInstance();
+
+	stupidTimer = 0;
+	stupidRatchet = INITIALIZED;
 
 	CameraServer::GetInstance()->SetQuality(50);
 	// "cameraname" needs to be changed
@@ -199,7 +203,9 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-	// timer.Start();
+	timer.Start();
+	timer.Stop();
+	stupidRatchet = 0;
 }
 
 void Robot::TeleopPeriodic()
@@ -223,13 +229,40 @@ void Robot::TeleopPeriodic()
 
 
 
+
+
 	// Lift Block
-	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& !(max_pos_switch.GetVoltage() > 2.5)*/)
-		lift.Set(0.6);
-	else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5))
-		lift.Set(-0.4);
-	else
+	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) && !(max_pos_switch.GetVoltage() > 2.5)) {
+		if(stupidTimer == false && stupidRatchet != UP){
+			timer.Reset();
+			stupidTimer = true;
+			ratchet.Set(-1.0);
+		}
+		else if(stupidTimer == true && timer.Get() > 500) {
+			timer.Stop();
+			stupidTimer = false;
+			stupidRatchet = UP;
+			ratchet.Set(0.0);
+		}
+		lift.Set(1.0);
+	}else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5)) {
+		if(stupidTimer == false && stupidRatchet != DOWN){
+			timer.Reset();
+			stupidTimer = true;
+			ratchet.Set(1.0);
+		}
+		else if(stupidTimer == true && timer.Get() > 500) {
+			timer.Stop();
+			stupidTimer = false;
+			stupidRatchet = DOWN;
+			ratchet.Set(0.0);
+		}
+		lift.Set(-0.5);
+	}else{
 		lift.Set(0.0);
+		ratchet.Set(0.0);
+	}
+
 
 	//Tunnel Roller Block
 	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))
@@ -261,11 +294,6 @@ void Robot::TeleopPeriodic()
 		front_roller_right.Set(0.0);
 	}
 
-	if(control_system_a.GetRawButton(3))
-		ratchet.SetAngle(180);
-	if(control_system_a.GetRawButton(4))
-		ratchet.SetAngle(270);
-
 	UpdateSDB();
 }
 
@@ -281,6 +309,7 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
 	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
 	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
+	SmartDashboard::PutNumber("Stupid Ratchet", stupidRatchet);
 }
 
 START_ROBOT_CLASS(Robot);

@@ -95,6 +95,12 @@ enum analog_in {
 	an_bot_switch = 0
 };
 
+enum positions {
+	INITIALIZED,
+	UP,
+	DOWN
+};
+
 class Robot: public IterativeRobot
 {
 	Joystick stick0; // only joystick
@@ -123,8 +129,8 @@ class Robot: public IterativeRobot
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 	AnalogInput min_pos_switch;
-//	AnalogInput max_pos_switch;
-//	Timer timer;
+	AnalogInput max_pos_switch;
+	Timer timer;
 
 	double lift_pos;
 
@@ -137,6 +143,9 @@ class Robot: public IterativeRobot
 	double nt_1_x;
 	double nt_0_y;
 	double nt_1_y;
+
+	int stupidRatchet;
+	bool stupidTimer;
 
 public:
 	Robot();

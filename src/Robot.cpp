@@ -53,9 +53,14 @@ void Robot::RobotInit()
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
 
-	CameraServer::GetInstance()->SetQuality(50);
+	SmartDashboard::PutBoolean("Up Twitch", false);
+	SmartDashboard::PutBoolean("Up Go", false);
+	SmartDashboard::PutBoolean("Down Twitch", false);
+	SmartDashboard::PutBoolean("Down Go", false);
+
+	//CameraServer::GetInstance()->SetQuality(50);
 	// "cameraname" needs to be changed
-	CameraServer::GetInstance()->StartAutomaticCapture("cameraName");
+	//CameraServer::GetInstance()->StartAutomaticCapture("cameraName");
 }
 
 void Robot::AutonomousInit()
@@ -206,6 +211,7 @@ void Robot::TeleopInit()
 	timer.Start();
 	timer.Stop();
 	stupidRatchet = 0;
+	ratchet.SetAngle(100);
 }
 
 void Robot::TeleopPeriodic()
@@ -229,42 +235,62 @@ void Robot::TeleopPeriodic()
 
 
 
-
+	SmartDashboard::PutBoolean("Down Run", false);
+	SmartDashboard::PutBoolean("Up Run", false);
+	//std::cout << timer.Get() << std::endl;
 
 	// Lift Block
-	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) && !(max_pos_switch.GetVoltage() > 2.5)) {
-		if(stupidTimer == false && stupidRatchet != UP){
+	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& (max_pos_switch.GetVoltage() == 0.0)*/) {
+		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
-			stupidTimer = true;
-			ratchet.Set(-1.0);
+			stupidTimer++;
+			ratchet.SetAngle(71.5);
+			lift.Set(-0.4);
+			std::cout << "Up Twitch" << std::endl;
+			SmartDashboard::PutBoolean("Up Twitch", true);
 		}
-		else if(stupidTimer == true && timer.Get() > 0.5) {
+		else if(stupidTimer > 10 && timer.Get() > 0.300) {
 			timer.Stop();
-			stupidTimer = false;
+			stupidTimer = 0;
 			stupidRatchet = UP;
-			ratchet.Set(0.0);
+			ratchet.SetAngle(103);
+			std::cout << "Up Go" << timer.Get() << std::endl;
+			SmartDashboard::PutBoolean("Up Go", true);
 		}
-		lift.Set(1.0);
-	}else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) && !(min_pos_switch.GetVoltage() > 2.5)) {
-		if(stupidTimer == false && stupidRatchet != DOWN){
+		else {
+			lift.Set(1.0);
+			std::cout << "Up Run" << timer.Get() << std::endl;
+			SmartDashboard::PutBoolean("Up Run", true);
+		}
+	}else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) /*&& (min_pos_switch.GetVoltage() == 0.0)*/) {
+		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
-			stupidTimer = true;
-			ratchet.Set(1.0);
-		}
-		else if(stupidTimer == true && timer.Get() > 0.5) {
+			stupidTimer++;
+			ratchet.SetAngle(124);
+			lift.Set(0.4);
+			std::cout << "Down Twitch" << std::endl;
+			SmartDashboard::PutBoolean("Down Twitch", true);
+		} else if(stupidTimer > 10 && timer.Get() > 0.300) {
 			timer.Stop();
-			stupidTimer = false;
+			stupidTimer = 0;
 			stupidRatchet = DOWN;
-			ratchet.Set(0.0);
+			ratchet.SetAngle(103);
+			std::cout << "Down Go" << timer.Get() << std::endl;
+			SmartDashboard::PutBoolean("Down Go", true);
+		} else {
+			lift.Set(-0.5);
+			std::cout << "Down Run" << timer.Get() << std::endl;
+			SmartDashboard::PutBoolean("Down Run", true);
 		}
-		lift.Set(-0.5);
-	}else{
+	} else {
 		lift.Set(0.0);
-		ratchet.Set(0.0);
+		timer.Stop();
+		timer.Reset();
+		stupidTimer = 0;
+		ratchet.SetAngle(103);
 	}
-
 
 	//Tunnel Roller Block
 	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))

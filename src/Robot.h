@@ -145,7 +145,7 @@ class Robot: public IterativeRobot
 	double nt_1_y;
 
 	int stupidRatchet;
-	bool stupidTimer;
+	int stupidTimer;
 
 public:
 	Robot();

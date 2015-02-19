@@ -58,9 +58,6 @@ void Robot::RobotInit()
 	SmartDashboard::PutBoolean("Down Twitch", false);
 	SmartDashboard::PutBoolean("Down Go", false);
 
-	//CameraServer::GetInstance()->SetQuality(50);
-	// "cameraname" needs to be changed
-	//CameraServer::GetInstance()->StartAutomaticCapture("cameraName");
 }
 
 void Robot::AutonomousInit()

@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 // Comment this out if you are not using the practice robot.
-//#define PRACTICE 1
+#define PRACTICE 1
 
 // Set this to false to use the other auton.
 const bool THREE_AUTON = false;

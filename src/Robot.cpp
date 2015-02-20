@@ -60,6 +60,30 @@ void Robot::RobotInit()
 
 }
 
+void auton_50() {
+
+}
+
+void auton_strafe(bool direction) {
+
+}
+
+void auton_forward() {
+
+}
+
+void auton_backward() {
+
+}
+
+void auton_lift_down() {
+
+}
+
+void auton_lift_up() {
+
+}
+
 void Robot::AutonomousInit()
 {
 	// See the paper "plan"; each code paragraph is supposed to correspond to a step.
@@ -68,7 +92,7 @@ void Robot::AutonomousInit()
 		// Working on the first tote.
 		tunnel_roller_motor.Set(1.0);
 		Wait(0.2);
-		
+
 		myRobot.ArcadeDrive(0.8, 0.0);
 		Wait(0.5);
 
@@ -181,10 +205,10 @@ void Robot::AutonomousInit()
 
 		myRobot.ArcadeDrive(0.8, 0.0);
 		Wait(0.5);
-	
+
 		tunnel_roller_motor.Set(-1.0);
 		Wait(0.5);
-		
+
 		strafeFrontDrive.Set(0.5);
 		strafeBackDrive.Set(-0.5);
 		Wait(0.5);
@@ -200,7 +224,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	
+
 }
 
 void Robot::TeleopInit()

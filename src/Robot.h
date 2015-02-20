@@ -151,6 +151,14 @@ public:
 	Robot();
 private:
 	double nullify(double n);
+
+	void auton_50();
+	void auton_strafe(bool direction);
+	void auton_forward();
+	void auton_backward();
+	void auton_lift_down();
+	void auton_lift_up();
+
 	void RobotInit();
 	void AutonomousInit();
 	void AutonomousPeriodic();
@@ -158,6 +166,7 @@ private:
 	void TeleopPeriodic();
 	void TestPeriodic();
 	void UpdateSDB();
+
 };
 
 #endif

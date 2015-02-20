@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "Robot.h"
+#include "pid.h"
 //#include "I2C.h"
 
 Robot::Robot():

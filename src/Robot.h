@@ -12,7 +12,7 @@ enum  auton {
 	ANGLE
 };
 
-const int AUTON = ;
+const int AUTON = PUSH;
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar

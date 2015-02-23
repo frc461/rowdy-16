@@ -5,8 +5,14 @@
 #define PRACTICE 1
 
 // Set this to false to use the other auton.
-const bool THREE_AUTON = false;
-const bool BORING = true;
+enum  auton {
+	PUSH,
+	FORWARD,
+	STRAFE,
+	ANGLE
+};
+
+const int AUTON = ;
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
@@ -152,10 +158,13 @@ public:
 private:
 	double nullify(double n);
 
-	void auton_50();
 	void auton_strafe(bool direction);
-	void auton_forward();
-	void auton_backward();
+
+	void auton_forward(bool direction );
+
+	void auton_push_side();
+	void auton_push();
+
 	void auton_lift_down();
 	void auton_lift_up();
 

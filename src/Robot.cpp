@@ -54,11 +54,7 @@ void Robot::RobotInit()
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
 
-	SmartDashboard::PutBoolean("Up Twitch", false);
-	SmartDashboard::PutBoolean("Up Go", false);
-	SmartDashboard::PutBoolean("Down Twitch", false);
-	SmartDashboard::PutBoolean("Down Go", false);
-
+	SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
 
 //pre's
@@ -67,22 +63,21 @@ void auton_lift_down() {
 }
 
 void auton_lift_up() {
-
 }
 
 //strafe
 void auton_strafe(bool direction) {
-
+	SmartDashboard::PutString("Auton Strafe", "Working");
 }
 
 //forward
 void auton_forward(bool direction) {
-
+	SmartDashboard::PutString("Auton Forward", "Working");
 }
 
 //push
 void auton_push_side() {
-
+	SmartDashboard::PutString("Auton Push", "Working");
 }
 
 void auton_push() {
@@ -91,6 +86,8 @@ void auton_push() {
 
 void Robot::AutonomousInit()
 {
+	const int AUTON = SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+
 	switch (AUTON) {
 	case PUSH:
 		auton_push();

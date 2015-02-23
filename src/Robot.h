@@ -6,13 +6,11 @@
 
 // Set this to false to use the other auton.
 enum  auton {
-	PUSH,
-	FORWARD,
-	STRAFE,
-	ANGLE
+	PUSH = 0,
+	FORWARD = 1,
+	STRAFE = 2,
+	ANGLE = 3
 };
-
-const int AUTON = PUSH;
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar

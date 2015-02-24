@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 // Comment this out if you are not using the practice robot.
-#define PRACTICE 0
+//#define PRACTICE 0
 
 // Set this to false to use the other auton.
 enum  auton {

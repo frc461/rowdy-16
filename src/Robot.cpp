@@ -54,7 +54,7 @@ void Robot::RobotInit()
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
 
-	//SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
 
 //pre's
@@ -86,8 +86,7 @@ void Robot::auton_push() {
 
 void Robot::AutonomousInit()
 {
-	//const int AUTON = SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
-	const int AUTON = STRAFE;
+	const int AUTON = SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 
 	switch (AUTON) {
 	case PUSH:

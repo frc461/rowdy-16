@@ -120,6 +120,7 @@ class Strafe: public PIDSubsystem {
 	SPEEDCONTROLCLASS *strafeFrontDrive;
 	SPEEDCONTROLCLASS *strafeBackDrive;
 	double strafe_speed;
+	double accumulated_error = 0.0;
 
 	Strafe(Encoder *passedfront_strafe, Encoder *passedback_strafe, SPEEDCONTROLCLASS *passedstrafeFrontDrive, SPEEDCONTROLCLASS *passedstrafeBackDrive);
 	double ReturnPIDInput();

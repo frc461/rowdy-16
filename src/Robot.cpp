@@ -268,11 +268,12 @@ double Strafe::ReturnPIDInput() {
 }
 
 void Strafe::UsePIDOutput(double output) {
+	accumulated_error += output;
 	if(output > 0) {
 		strafeFrontDrive->Set(strafe_speed);
-		strafeBackDrive->Set(strafe_speed - output);
+		strafeBackDrive->Set(strafe_speed - accumulated_error);
 	} else {
-		strafeFrontDrive->Set(strafe_speed - output);
+		strafeFrontDrive->Set(strafe_speed - accumulated_error);
 		strafeBackDrive->Set(strafe_speed);
 	}
 }

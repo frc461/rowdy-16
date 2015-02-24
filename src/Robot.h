@@ -1,8 +1,9 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+
 // Comment this out if you are not using the practice robot.
-#define PRACTICE 1
+//#define PRACTICE 0
 
 // Set this to false to use the other auton.
 enum  auton {
@@ -105,8 +106,32 @@ enum positions {
 	DOWN
 };
 
+
+class Strafe: public PIDSubsystem {
+ public:
+	//constants
+	//Robot *myRobot;
+
+	// define econders/jags/talons etc
+	/* SPEEDCONTROLCLASS strafeFrontDrive; */
+	/* SPEEDCONTROLCLASS strafeBackDrive; */
+	Encoder *front_strafe;
+	Encoder *back_strafe;
+	SPEEDCONTROLCLASS *strafeFrontDrive;
+	SPEEDCONTROLCLASS *strafeBackDrive;
+	double strafe_speed;
+
+	Strafe(Encoder *passedfront_strafe, Encoder *passedback_strafe, SPEEDCONTROLCLASS *passedstrafeFrontDrive, SPEEDCONTROLCLASS *passedstrafeBackDrive);
+	double ReturnPIDInput();
+	void UsePIDOutput(double output);
+	/* void InitDefaultCommand(); */
+
+};
+
 class Robot: public IterativeRobot
 {
+public:
+
 	Joystick stick0; // only joystick
 	Joystick stick1; // only joystick
 	Joystick control_system_a;
@@ -130,6 +155,8 @@ class Robot: public IterativeRobot
 	Encoder front_strafe;
 	Encoder lift_turney;
 
+	Strafe myStrafe;
+
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 	AnalogInput min_pos_switch;
@@ -148,12 +175,9 @@ class Robot: public IterativeRobot
 	double nt_0_y;
 	double nt_1_y;
 
-	double strafe_speed;
-
 	int stupidRatchet;
 	int stupidTimer;
 
-public:
 	Robot();
 private:
 	double nullify(double n);
@@ -177,5 +201,7 @@ private:
 	void UpdateSDB();
 
 };
+
+
 
 #endif

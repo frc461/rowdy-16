@@ -150,6 +150,8 @@ class Robot: public IterativeRobot
 	double nt_0_y;
 	double nt_1_y;
 
+	double strafe_speed;
+
 	int stupidRatchet;
 	int stupidTimer;
 

@@ -1,6 +1,6 @@
 #include "WPILib.h"
 #include "Robot.h"
-#include "pid.h"
+//#include "pid.h"
 //#include "I2C.h"
 
 Robot::Robot():
@@ -58,30 +58,30 @@ void Robot::RobotInit()
 }
 
 //pre's
-void auton_lift_down() {
+void Robot::auton_lift_down() {
 
 }
 
-void auton_lift_up() {
+void Robot::auton_lift_up() {
 }
 
 //strafe
-void auton_strafe(bool direction) {
+void Robot::auton_strafe(bool direction) {
 	SmartDashboard::PutString("Auton Strafe", "Working");
 }
 
 //forward
-void auton_forward(bool direction) {
+void Robot::auton_forward(bool direction) {
 	SmartDashboard::PutString("Auton Forward", "Working");
 }
 
 //push
-void auton_push_side() {
-	SmartDashboard::PutString("Auton Push", "Working");
+void Robot::auton_push_side() {
+
 }
 
-void auton_push() {
-
+void Robot::auton_push() {
+	SmartDashboard::PutString("Auton Push", "Working");
 }
 
 void Robot::AutonomousInit()
@@ -93,10 +93,10 @@ void Robot::AutonomousInit()
 		auton_push();
 		break;
 	case FORWARD:
-		auton_forward();
+		auton_forward(false);
 		break;
 	case STRAFE:
-		auton_strafe();
+		auton_strafe(false);
 		break;
 	case ANGLE:
 		break;

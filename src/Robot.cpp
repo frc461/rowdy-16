@@ -133,8 +133,7 @@ void Robot::TeleopPeriodic()
 	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
 	myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
-	strafeFrontDrive.Set(nt_0_x);
-	strafeBackDrive.Set(-nt_0_x);
+	strafe_speed = nt_0_x;
 
 
 

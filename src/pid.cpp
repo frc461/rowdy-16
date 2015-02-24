@@ -7,7 +7,7 @@ Strafe::Strafe() : PIDSubsystem("Strafe", /* pid constants */ 1.0, 0.0, 0.0) {
 	// strafeFrontDrive = Robot.strafeFrontDrive;
 	// strafeBackDrive = Robot.strafeBackDrive;
 
-	SetSetpoint(0.0); // don't move at start
+	SetSetpoint(0.0); // we don't want any difference between the two.
 	Enable();
 }
 
@@ -17,11 +17,12 @@ double Strafe::ReturnPIDInput() {
 }
 
 void Strafe::UsePIDOutput(output) {
+	accumulated_output += output
 	if(output > 0) {
 		Robot.strafeFrontDrive.Set(Robot.strafe_speed);
-		Robot.strafeBackDrive.Set(Robot.strafe_speed - output);
+		Robot.strafeBackDrive.Set(-Robot.strafe_speed + accumulated_output);
 	} else {
-		Robot.strafeFrontDrive.Set(Robot.strafe_speed - output);
-		Robot.strafeBackDrive.Set(Robot.strafe_speed);
+		Robot.strafeFrontDrive.Set(Robot.strafe_speed - accumulated_output);
+		Robot.strafeBackDrive.Set(-Robot.strafe_speed);
 	}
 }

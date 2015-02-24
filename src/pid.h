@@ -4,6 +4,7 @@
 class Strafe: public PIDSubsystem {
  public:
 	//constants
+	double accumulated_error = 0.0;
 
 	// define econders/jags/talons etc
 	/* SPEEDCONTROLCLASS strafeFrontDrive; */

@@ -1,6 +1,5 @@
 #include "WPILib.h"
 #include "Robot.h"
-//#include "pid.h"
 //#include "I2C.h"
 
 Robot::Robot():
@@ -31,11 +30,13 @@ Robot::Robot():
 	back_strafe(dio_bu, dio_bv),
 	front_strafe(dio_fu, dio_fv),
 	lift_turney(dio_lu, dio_lv),
+	myStrafe(&front_strafe, &back_strafe, &strafeFrontDrive, &strafeBackDrive),
 	timer()
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
 	lift_pos = 0;
+	//myStrafe.myRobot = this;
 //	color_sensor.Write(0x00,0x00);
 }
 
@@ -54,7 +55,7 @@ void Robot::RobotInit()
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
 
-	SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
 
 //pre's
@@ -86,7 +87,8 @@ void Robot::auton_push() {
 
 void Robot::AutonomousInit()
 {
-	const int AUTON = SmartDashboard::GetNumber("AUTON ? (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	int AUTON = SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+//	const int AUTON = STRAFE;
 
 	switch (AUTON) {
 	case PUSH:
@@ -133,9 +135,9 @@ void Robot::TeleopPeriodic()
 	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
 	myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
-	strafeFrontDrive.Set(nt_0_x);
-	strafeBackDrive.Set(-nt_0_x);
-
+//	strafeFrontDrive.Set(nt_0_x);
+//	strafeBackDrive.Set(-nt_0_x);
+	myStrafe.strafe_speed = nt_0_x;
 
 
 	SmartDashboard::PutBoolean("Down Run", false);
@@ -244,3 +246,34 @@ void Robot::UpdateSDB() {
 }
 
 START_ROBOT_CLASS(Robot);
+
+Strafe::Strafe(Encoder *passedfront_strafe, Encoder *passedback_strafe, SPEEDCONTROLCLASS *passedstrafeFrontDrive, SPEEDCONTROLCLASS *passedstrafeBackDrive) : PIDSubsystem("Strafe", /* pid constants */ 1.0, 0.0, 0.0) {
+	GetPIDController()->SetContinuous(false);
+
+	// assign encoders/jags/talons etc
+	// strafeFrontDrive = Robot.strafeFrontDrive;
+	// strafeBackDrive = Robot.strafeBackDrive;
+	front_strafe = passedfront_strafe;
+	back_strafe = passedback_strafe;
+	strafeFrontDrive = passedstrafeFrontDrive;
+	strafeBackDrive = passedstrafeBackDrive;
+
+	SetSetpoint(0.0); // don't move at start
+	//Enable();
+}
+
+double Strafe::ReturnPIDInput() {
+	// returns difference between encoders
+	return front_strafe->GetRate() - back_strafe->GetRate();
+}
+
+void Strafe::UsePIDOutput(double output) {
+	if(output > 0) {
+		strafeFrontDrive->Set(strafe_speed);
+		strafeBackDrive->Set(strafe_speed - output);
+	} else {
+		strafeFrontDrive->Set(strafe_speed - output);
+		strafeBackDrive->Set(strafe_speed);
+	}
+}
+

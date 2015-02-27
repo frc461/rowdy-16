@@ -83,11 +83,26 @@ void Robot::auton_push_side() {
 
 void Robot::auton_push() {
 	SmartDashboard::PutString("Auton Push", "Working");
+
+	front_strafe.Reset();
+	back_strafe.Reset();
+
+	while (front_strafe.Get() < 410 || back_strafe.Get() < 410) {
+		if (front_strafe.Get() < 410)
+			strafeFrontDrive.Set(0.8);
+		else
+			strafeFrontDrive.Set(0.0);
+
+		if (back_strafe.Get() < -410)
+			strafeBackDrive.Set(-0.8);
+		else
+			strafeBackDrive.Set(0.0);
+	}
 }
 
 void Robot::AutonomousInit()
 {
-	int AUTON = SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	int AUTON = PUSH;//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 //	const int AUTON = STRAFE;
 
 	switch (AUTON) {
@@ -135,8 +150,8 @@ void Robot::TeleopPeriodic()
 	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
 
 	myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
-//	strafeFrontDrive.Set(nt_0_x);
-//	strafeBackDrive.Set(-nt_0_x);
+	strafeFrontDrive.Set(nt_0_x);
+	strafeBackDrive.Set(-nt_0_x);
 	myStrafe.strafe_speed = nt_0_x;
 
 

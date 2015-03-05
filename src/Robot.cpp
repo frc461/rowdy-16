@@ -403,6 +403,7 @@ void Robot::TeleopPeriodic()
 	}
 
 	//functions sub-block
+#ifndef PRACTICE
 	if (f_half) {
 		if (left_drive.Get() < -114) {
 			f_half = false;
@@ -428,12 +429,15 @@ void Robot::TeleopPeriodic()
 		myRobot.ArcadeDrive(0.6,0.0);
 		SmartDashboard::PutBoolean("Hat", true);
 	} else {
+#endif
 		SmartDashboard::PutBoolean("Hat", false);
 		myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
 		strafeFrontDrive.Set(nt_0_x);
 		strafeBackDrive.Set(-nt_0_x);
 		myStrafe.strafe_speed = nt_0_x;
+#ifndef PRACTICE
 	}
+#endif
 
 	SmartDashboard::PutBoolean("b_half", b_half);
 	SmartDashboard::PutBoolean("f_half", f_half);

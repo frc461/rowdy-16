@@ -97,9 +97,16 @@ void Robot::auton_turn_90( bool opposite = false) {
 	right_drive.Reset();
 	left_drive.Reset();
 
-	while ((left_drive.Get() < ((opposite) ? -560 : 560) /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(0.0,((opposite) ? -0.8 : 0.8));
+	if (opposite) {
+		while ((left_drive.Get() > -560 /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
+			myRobot.ArcadeDrive(0.0, -0.8);
+		}
+
+	} else {
+		while ((left_drive.Get() <  560 /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
+			myRobot.ArcadeDrive(0.0, 0.8));
 	}
+
 	myRobot.ArcadeDrive(0.0,0.0);
 }
 
@@ -114,12 +121,13 @@ void Robot::auton_forward(bool direction) {
 }
 
 //push both
+//place facing east centered relative to the box and directly south of it.
 void Robot::auton_push_both() {
 
+	//push stuff!
 	front_strafe.Reset();
 	back_strafe.Reset();
 
-	//push stuff!
 	while ((front_strafe.Get() < 410 /*|| back_strafe.Get() > -410*/) && timer.Get() < 15.0) {
 	//	if (front_strafe.Get() < 410)
 			strafeFrontDrive.Set(0.8);
@@ -134,14 +142,17 @@ void Robot::auton_push_both() {
 	strafeBackDrive.Set(0.0);
 	strafeFrontDrive.Set(0.0);
 
-	//drive back
-	while ((front_strafe.Get() > -410 /*|| back_strafe.Get() < 410*/) && timer.Get() < 15.0) {
-	//	if (front_strafe.Get() > -410)
+	//drive back and then some
+	front_strafe.Reset();
+	back_strafe.Reset();
+
+	while ((front_strafe.Get() > -535 /*|| back_strafe.Get() < 535*/) && timer.Get() < 15.0) {
+	//	if (front_strafe.Get() > -535)
 			strafeFrontDrive.Set(-0.8);
 	//	else
 	//		strafeFrontDrive.Set(0.0);
 
-	//	if (back_strafe.Get() < 410)
+	//	if (back_strafe.Get() < 535)
 			strafeBackDrive.Set(0.8);
 	//	else
 	//		strafeBackDrive.Set(0.0);
@@ -149,21 +160,73 @@ void Robot::auton_push_both() {
 	strafeBackDrive.Set(0.0);
 	strafeFrontDrive.Set(0.0);
 
-	//turn 90°
-	//	auton_turn_90();
+	//turn 90° left
+	auton_turn_90();
 
-	//	auton_lift_down_init();
+	//move to the container
+	//push stuff!
+	front_strafe.Reset();
+	back_strafe.Reset();
 
-	//	auton_lift_up();
+	while ((front_strafe.Get() < 114 /*|| back_strafe.Get() > -114*/) && timer.Get() < 15.0) {
+	//	if (front_strafe.Get() < 410)
+			strafeFrontDrive.Set(0.8);
+	//	else
+	//		strafeFrontDrive.Set(0.0);
+
+	//	if (back_strafe.Get() > -410)
+			strafeBackDrive.Set(-0.8);
+	//	else
+	//		strafeBackDrive.Set(0.0);
+	}
+	strafeBackDrive.Set(0.0);
+	strafeFrontDrive.Set(0.0);
+
+	//move forward to the container
+	left_drive.Reset();
+	right_drive.Reset();
+
+	while((left_drive.Get() < -213)  && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(-0.8, 0.0);
+	}
+
+	myRobot.ArcadeDrive(0.0,0.0);
+
+	//lift up - pickup the tote
+	auton_lift_up();
+
+	//turn 90° right
+	auton_turn_90(true);
+
+	left_drive.Reset();
+
+	//move to the container
+	while ((front_strafe.Get() < 535 /*|| back_strafe.Get() > -535*/) && timer.Get() < 15.0) {
+	//	if (front_strafe.Get() > -410)
+			strafeFrontDrive.Set(0.8);
+	//	else
+	//		strafeFrontDrive.Set(0.0);
+
+	//	if (back_strafe.Get() < 410)
+			strafeBackDrive.Set(-0.8);
+	//	else
+	//		strafeBackDrive.Set(0.0);
+	}
+	strafeBackDrive.Set(0.0);
+	strafeFrontDrive.Set(0.0);
 
 	//	Drive forward to tote
-	//	Needs to be tested. (Direction)
 	/*	left_drive.Reset();
 		right_drive.Reset();
 
-		while ((left_drive.Get() < 344 || right_drive.Get() > -344) && timer.Get() < 15.0) {
+		while ((left_drive.Get() > -344)  && timer.Get() < 15.0) {
 				myRobot.ArcadeDrive(0.8,0.0);
 				}*/
+
+	//	auton_lift_down();
+
+	//	auton_lift_up();
+
 
 	//	auton_lift_down();
 

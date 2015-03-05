@@ -7,10 +7,12 @@
 
 // Set this to false to use the other auton.
 enum  auton {
-	PUSH = 0,
+	PUSH_TOTE = 0,
 	FORWARD = 1,
 	STRAFE = 2,
-	ANGLE = 3
+	PUSH_FULL = 3,
+	CONTAINER = 4,
+	BORING = 5
 };
 
 #ifdef PRACTICE
@@ -52,13 +54,15 @@ enum can_bus {
 };
 
 enum js_a_buttons {
-	js_a_lift_down = 2,
-	js_a_lift_up = 3,
+	js_a_slow_down = 1,
+	js_a_b_half = 2, //f = forward, b = backward
+	js_a_f_half = 3,
 	js_a_tun_roller_out = 4,
 	js_a_tun_roller_in = 5
 };
 
 enum js_b_buttons {
+	js_b_smooth = 1,
 	js_b_f_rol_in = 4,
 	js_b_f_rol_out = 5
 };
@@ -74,7 +78,8 @@ enum cs_a_buttons {
 	a_f_rol_rotate_left = 9,
 	a_f_rol_rotate_right = 10,
 	a_f_rol_in = 12,
-	a_f_rol_out = 11
+	a_f_rol_out = 11,
+	a_twitch = 1
 };
 
 enum cs_b_buttons {
@@ -176,8 +181,13 @@ public:
 	double nt_0_y;
 	double nt_1_y;
 
+	double smoothing_factor;
+
 	int stupidRatchet;
 	int stupidTimer;
+
+	bool b_half;
+	bool f_half;
 
 	Robot();
 private:
@@ -187,11 +197,15 @@ private:
 
 	void auton_forward(bool direction );
 
-	void auton_push_side();
-	void auton_push();
+	void auton_push_both();
+	void auton_push_tote();
 
+	void auton_container();
+
+	void auton_lift_down_init();
 	void auton_lift_down();
 	void auton_lift_up();
+	void auton_turn_90(bool opposite);
 
 	void RobotInit();
 	void AutonomousInit();

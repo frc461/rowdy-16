@@ -23,8 +23,8 @@ Robot::Robot():
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
 //	color_sensor(I2C::kOnboard, color),
-	min_pos_switch(an_top_switch),
-	max_pos_switch(an_bot_switch),
+	min_pos_switch(an_bot_switch),
+	max_pos_switch(an_top_switch),
 	right_drive(dio_rdu, dio_rdv),
 	left_drive(dio_ldu, dio_ldv),
 	back_strafe(dio_bu, dio_bv),
@@ -48,6 +48,18 @@ double Robot::nullify(double n) {
 	return n;
 }
 
+void Robot::UpdateSDB() {
+	SmartDashboard::PutNumber("Right Drive Encoder", right_drive.Get());
+	SmartDashboard::PutNumber("Left Drive Encoder", left_drive.Get());
+	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
+	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
+	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
+	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
+	SmartDashboard::PutNumber("Stupid Ratchet", stupidRatchet);
+	SmartDashboard::PutNumber("Max_Pos_Switch", max_pos_switch.GetVoltage());
+	SmartDashboard::PutNumber("Min_Pos_Switch", min_pos_switch.GetVoltage());
+}
+
 void Robot::RobotInit()
 {
 	lw = LiveWindow::GetInstance();
@@ -59,11 +71,36 @@ void Robot::RobotInit()
 }
 
 //pre's
+void Robot::auton_lift_down_init() {
+
+	lift_turney.Reset();
+
+	//lift
+	while((lift_turney.Get() < 500) && timer.Get() < 15.0) {
+
+		lift.Set(-1.0);
+
+	}
+
+}
+
 void Robot::auton_lift_down() {
 
 }
 
 void Robot::auton_lift_up() {
+}
+
+// false = left; true = right
+void Robot::auton_turn_90( bool opposite = false) {
+
+	right_drive.Reset();
+	left_drive.Reset();
+
+	while ((left_drive.Get() < ((opposite) ? -560 : 560) /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.0,((opposite) ? -0.8 : 0.8));
+	}
+	myRobot.ArcadeDrive(0.0,0.0);
 }
 
 //strafe
@@ -76,38 +113,162 @@ void Robot::auton_forward(bool direction) {
 	SmartDashboard::PutString("Auton Forward", "Working");
 }
 
-//push
-void Robot::auton_push_side() {
+//push both
+void Robot::auton_push_both() {
 
+	front_strafe.Reset();
+	back_strafe.Reset();
+
+	//push stuff!
+	while ((front_strafe.Get() < 410 /*|| back_strafe.Get() > -410*/) && timer.Get() < 15.0) {
+	//	if (front_strafe.Get() < 410)
+			strafeFrontDrive.Set(0.8);
+	//	else
+	//		strafeFrontDrive.Set(0.0);
+
+	//	if (back_strafe.Get() > -410)
+			strafeBackDrive.Set(-0.8);
+	//	else
+	//		strafeBackDrive.Set(0.0);
+	}
+	strafeBackDrive.Set(0.0);
+	strafeFrontDrive.Set(0.0);
+
+	//drive back
+	while ((front_strafe.Get() > -410 /*|| back_strafe.Get() < 410*/) && timer.Get() < 15.0) {
+	//	if (front_strafe.Get() > -410)
+			strafeFrontDrive.Set(-0.8);
+	//	else
+	//		strafeFrontDrive.Set(0.0);
+
+	//	if (back_strafe.Get() < 410)
+			strafeBackDrive.Set(0.8);
+	//	else
+	//		strafeBackDrive.Set(0.0);
+	}
+	strafeBackDrive.Set(0.0);
+	strafeFrontDrive.Set(0.0);
+
+	//turn 90°
+	//	auton_turn_90();
+
+	//	auton_lift_down_init();
+
+	//	auton_lift_up();
+
+	//	Drive forward to tote
+	//	Needs to be tested. (Direction)
+	/*	left_drive.Reset();
+		right_drive.Reset();
+
+		while ((left_drive.Get() < 344 || right_drive.Get() > -344) && timer.Get() < 15.0) {
+				myRobot.ArcadeDrive(0.8,0.0);
+				}*/
+
+	//	auton_lift_down();
+
+	//	auton_lift_up();
+
+	// auton_turn_90();
+
+	//	Drive Forward a lot code
+	//	Needs testing (direction)
+		/*	left_drive.Reset();
+		right_drive.Reset();
+
+		while ((left_drive.Get() < 2044 || right_drive.Get() > -2044) && timer.Get() < 15.0) {
+			myRobot.ArcadeDrive(0.8,0.0);
+				}*/
 }
 
-void Robot::auton_push() {
+//push tote
+void Robot::auton_push_tote() {
 	SmartDashboard::PutString("Auton Push", "Working");
 
 	front_strafe.Reset();
 	back_strafe.Reset();
 
-	while (front_strafe.Get() < 410 || back_strafe.Get() < 410) {
-		if (front_strafe.Get() < 410)
+	//push stuff!
+	while ((front_strafe.Get() > -410 /*|| back_strafe.Get() < 410*/) && timer.Get() < 15.0) {
+//		if (front_strafe.Get() > -410)
 			strafeFrontDrive.Set(0.8);
-		else
-			strafeFrontDrive.Set(0.0);
+//		else
+//			strafeFrontDrive.Set(0.0);
 
-		if (back_strafe.Get() < -410)
+//		if (back_strafe.Get() < 410)
 			strafeBackDrive.Set(-0.8);
-		else
-			strafeBackDrive.Set(0.0);
+//		else
+//			strafeBackDrive.Set(0.0);
+		UpdateSDB();
 	}
+	strafeBackDrive.Set(0.0);
+	strafeFrontDrive.Set(0.0);
+
+	//Pick the stuffz up...
+	//	auton_lift_down_init();
+
+	//	auton_lift_up();
+
+	// Drive forward a bit...
+	// This needs more testing (Direction)
+	/*	left_drive.Reset();
+	right_drive.Reset();
+
+	while ((left_drive.Get() < 410 || right_drive.Get() > -410) && timer.Get() < 15.0) {
+			myRobot.ArcadeDrive(0.8,0.0);
+			}*/
+
+
+	//	auton_turn_90();
+
+	//Drive forward a lot of bits...
+	//This needs more testing (Direction)
+	//Same as the other 2044 one.
+	/*	left_drive.Reset();
+	right_drive.Reset();
+
+	while ((left_drive.Get() < 2044 || right_drive.Get() > -2044) && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.8,0.0);
+			}*/
+
+}
+
+void Robot::auton_container() {
+
+	left_drive.Reset();
+
+	while((left_drive.Get() < -213)  && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(-0.8, 0.0);
+	}
+
+	myRobot.ArcadeDrive(0.0,0.0);
+
+	auton_lift_up();
+
+	auton_turn_90(true);
+
+	left_drive.Reset();
+
+	while((left_drive.Get < -2044) && timer.Get < 15.0) {
+		myRobot.ArcadeDrive(-0.6, 0.0);
+	}
+
+	myRobot.ArcadeDrive(0.0,0.0);
+
+	auton_turn_90();
+
 }
 
 void Robot::AutonomousInit()
 {
-	int AUTON = PUSH;//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	int AUTON = BORING; //SmartDashboard::GetNumber("AUTON");
 //	const int AUTON = STRAFE;
 
+	timer.Start();
+
 	switch (AUTON) {
-	case PUSH:
-		auton_push();
+	case PUSH_TOTE:
+		auton_push_tote();
 		break;
 	case FORWARD:
 		auton_forward(false);
@@ -115,10 +276,18 @@ void Robot::AutonomousInit()
 	case STRAFE:
 		auton_strafe(false);
 		break;
-	case ANGLE:
+	case PUSH_FULL:
+		break;
+	case CONTAINER:
+		auton_container();
+		break;
+	case BORING:
+		while(timer.Get() < 1.1) {
+			myRobot.ArcadeDrive(-1.0, 0.0);
+		}
+		auton_turn_90();
 		break;
 	}
-
 }
 
 void Robot::AutonomousPeriodic()
@@ -132,10 +301,13 @@ void Robot::TeleopInit()
 	timer.Stop();
 	stupidRatchet = 0;
 	ratchet.SetAngle(100);
+	b_half = false;
+	f_half = false;
 }
 
 void Robot::TeleopPeriodic()
 {
+	//driving block
 	//get the raw values
 	raw_0_x = stick0.GetX();
 	raw_1_x = stick1.GetX();
@@ -144,15 +316,60 @@ void Robot::TeleopPeriodic()
 
 	//drive_speed_ain_value = ds->GetAnalogIn(2);
 
-	nt_0_x = nullify(raw_0_x) /** (drive_speed_ain_value / 5.0)*/;
-	nt_1_x = nullify(raw_1_x) /** (drive_speed_ain_value / 5.0)*/;
-	nt_0_y = -nullify(raw_0_y) /** (drive_speed_ain_value / 5.0)*/;
-	nt_1_y = nullify(raw_1_y) /** (drive_speed_ain_value / 5.0)*/;
+	//create modified values
+	nt_0_x = nullify(raw_0_x) * ((stick0.GetRawButton(js_a_slow_down)) ? 0.75 : 1.0);
+	nt_1_x = nullify(raw_1_x) * ((stick0.GetRawButton(js_a_slow_down)) ? 0.75 : 1.0);
+	nt_0_y = -nullify(raw_0_y) * ((stick0.GetRawButton(js_a_slow_down)) ? 0.75 : 1.0);
+	nt_1_y = nullify(raw_1_y) * ((stick0.GetRawButton(js_a_slow_down)) ? 0.75 : 1.0);
 
-	myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
-	strafeFrontDrive.Set(nt_0_x);
-	strafeBackDrive.Set(-nt_0_x);
-	myStrafe.strafe_speed = nt_0_x;
+	//smoothing factor sub-block
+	if (stick1.GetRawButton(js_b_smooth)) {
+		nt_0_x *= smoothing_factor;
+		nt_1_x *= smoothing_factor;
+		nt_0_y *= smoothing_factor;
+		nt_1_y *= smoothing_factor;
+		if (smoothing_factor < 1.0) {
+			smoothing_factor += .001;
+		}
+	} else {
+		smoothing_factor = 0.65;
+	}
+
+	//functions sub-block
+	if (f_half) {
+		if (left_drive.Get() < -114) {
+			f_half = false;
+			SmartDashboard::PutBoolean("Hat Done", true);
+			myRobot.ArcadeDrive(0.0,0.0);
+		} else
+			myRobot.ArcadeDrive(-0.6,0.0);
+	} else if (b_half)  {
+		if (left_drive.Get() > 114) {
+			b_half = false;
+			SmartDashboard::PutBoolean("Hat Done", true);
+			myRobot.ArcadeDrive(0.0,0.0);
+		} else
+			myRobot.ArcadeDrive(0.6,0.0);
+	} else if(stick0.GetRawButton(js_a_f_half)) {
+		f_half = 1;
+		left_drive.Reset();
+		myRobot.ArcadeDrive(-0.6,0.0);
+		SmartDashboard::PutBoolean("Hat", true);
+	} else if(stick0.GetRawButton(js_a_b_half)) {
+		b_half = 1;
+		left_drive.Reset();
+		myRobot.ArcadeDrive(0.6,0.0);
+		SmartDashboard::PutBoolean("Hat", true);
+	} else {
+		SmartDashboard::PutBoolean("Hat", false);
+		myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
+		strafeFrontDrive.Set(nt_0_x);
+		strafeBackDrive.Set(-nt_0_x);
+		myStrafe.strafe_speed = nt_0_x;
+	}
+
+	SmartDashboard::PutBoolean("b_half", b_half);
+	SmartDashboard::PutBoolean("f_half", f_half);
 
 
 	SmartDashboard::PutBoolean("Down Run", false);
@@ -160,13 +377,13 @@ void Robot::TeleopPeriodic()
 	//std::cout << timer.Get() << std::endl;
 
 	// Lift Block
-	if ((control_system_b.GetRawButton(b_lift_up) || stick0.GetRawButton(js_a_lift_up)) /*&& (max_pos_switch.GetVoltage() == 0.0)*/) {
-		if(stupidTimer < 10 && timer.Get() < 0.300){
+	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
+		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
 			timer.Reset();
 			timer.Start();
 			stupidTimer++;
 			ratchet.SetAngle(71.5);
-			lift.Set(-0.4);
+			lift.Set(((control_system_a.GetRawButton(a_twitch)) ? -0.600 : -0.400));//-0.4);
 			std::cout << "Up Twitch" << std::endl;
 			SmartDashboard::PutBoolean("Up Twitch", true);
 		}
@@ -183,13 +400,16 @@ void Robot::TeleopPeriodic()
 			std::cout << "Up Run" << timer.Get() << std::endl;
 			SmartDashboard::PutBoolean("Up Run", true);
 		}
-	}else if ((control_system_b.GetRawButton(b_lift_down) || stick0.GetRawButton(js_a_lift_down)) /*&& (min_pos_switch.GetVoltage() == 0.0)*/) {
+		if(max_pos_switch.GetVoltage() < 0.1) {
+			ratchet.SetAngle(124);
+		}
+	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
 		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
 			stupidTimer++;
 			ratchet.SetAngle(124);
-			lift.Set(0.4);
+			lift.Set(((control_system_a.GetRawButton(a_twitch)) ? 0.600 : 0.400));//0.4);
 			std::cout << "Down Twitch" << std::endl;
 			SmartDashboard::PutBoolean("Down Twitch", true);
 		} else if(stupidTimer > 10 && timer.Get() > 0.300) {
@@ -250,15 +470,6 @@ void Robot::TestPeriodic()
 	lw->Run();
 }
 
-void Robot::UpdateSDB() {
-	SmartDashboard::PutNumber("Right Drive Encoder", right_drive.Get());
-	SmartDashboard::PutNumber("Left Drive Encoder", left_drive.Get());
-	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
-	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
-	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
-	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
-	SmartDashboard::PutNumber("Stupid Ratchet", stupidRatchet);
-}
 
 START_ROBOT_CLASS(Robot);
 

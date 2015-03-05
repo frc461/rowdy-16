@@ -324,6 +324,8 @@ void Robot::auton_container() {
 
 void Robot::AutonomousInit()
 {
+#ifndef PRACTICE
+
 	int AUTON = BORING; //SmartDashboard::GetNumber("AUTON");
 //	const int AUTON = STRAFE;
 
@@ -351,6 +353,8 @@ void Robot::AutonomousInit()
 		auton_turn_90();
 		break;
 	}
+
+#endif
 }
 
 void Robot::AutonomousPeriodic()

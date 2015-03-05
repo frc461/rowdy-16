@@ -58,6 +58,8 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Stupid Ratchet", stupidRatchet);
 	SmartDashboard::PutNumber("Max_Pos_Switch", max_pos_switch.GetVoltage());
 	SmartDashboard::PutNumber("Min_Pos_Switch", min_pos_switch.GetVoltage());
+	SmartDashboard::PutNumber("Lift Motor", lift.Get());
+
 }
 
 void Robot::RobotInit()
@@ -104,9 +106,9 @@ void Robot::auton_turn_90( bool opposite = false) {
 
 	} else {
 		while ((left_drive.Get() <  560 /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
-			myRobot.ArcadeDrive(0.0, 0.8));
+			myRobot.ArcadeDrive(0.0, 0.8);
+		}
 	}
-
 	myRobot.ArcadeDrive(0.0,0.0);
 }
 
@@ -312,7 +314,7 @@ void Robot::auton_container() {
 
 	left_drive.Reset();
 
-	while((left_drive.Get < -2044) && timer.Get < 15.0) {
+	while((left_drive.Get() < -2044) && timer.Get() < 15.0) {
 		myRobot.ArcadeDrive(-0.6, 0.0);
 	}
 

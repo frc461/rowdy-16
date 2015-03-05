@@ -15,9 +15,11 @@ enum  auton {
 	BORING = 5
 };
 
+#define PRACTICE 1
+
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
-	#define SPECIALCONTROLCLASS Victor
+	#define SPECIALCONTROLCLASS Jaguar
 #else
 	#define SPEEDCONTROLCLASS Talon
 	#define SPECIALCONTROLCLASS CANTalon
@@ -47,7 +49,7 @@ enum p_w_m {
 
 enum can_bus {
 	#ifdef PRACTICE
-		ct_lift = 9
+		ct_lift = 7
 	#else
 		ct_lift = 1
 	#endif

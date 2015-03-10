@@ -45,6 +45,8 @@ enum p_w_m {
 //	t_frl_l = 8,
 	t_tun_rol = 7,
 	t_lights = 10,
+	t_more_lights = 11,
+	t_and_more_lights = 12,
 	t_stopper_can
 };
 
@@ -152,6 +154,8 @@ public:
 	Timer timer;
 
 	PWM lights;
+	PWM more_lights;
+	PWM and_more_lights;
 
 	double lift_pos;
 

@@ -32,7 +32,9 @@ Robot::Robot():
 	lift_turney(dio_lu, dio_lv),
 	lift_stopper(t_stopper_can, ct_stopper),
 	timer(),
-	lights(t_lights)
+	lights(t_lights),
+	more_lights(t_more_lights),
+	and_more_lights(t_and_more_lights)
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
@@ -69,7 +71,9 @@ void Robot::RobotInit()
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
 
-	lights.SetRaw(100);
+	lights.SetRaw(0);
+	more_lights.SetRaw(0);
+	and_more_lights.SetRaw(0);
 
 	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }

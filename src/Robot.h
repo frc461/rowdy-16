@@ -41,18 +41,20 @@ enum p_w_m {
 	t_bl = 4,
 	t_bc = 3,
 	t_br = 1,
-	t_frl_r = 6,
-	t_frl_l = 8,
+//	t_frl_r = 6,
+//	t_frl_l = 8,
 	t_tun_rol = 7,
-	t_ratchet = 9
+	t_lights = 10,
+	t_stopper_can
 };
 
 enum can_bus {
 	#ifdef PRACTICE
-		ct_lift = 7
+		ct_lift = 9,
 	#else
-		ct_lift = 1
+		ct_lift = 1,
 	#endif
+	ct_stopper
 };
 
 enum js_a_buttons {
@@ -114,28 +116,6 @@ enum positions {
 };
 
 
-class Strafe: public PIDSubsystem {
- public:
-	//constants
-	//Robot *myRobot;
-
-	// define econders/jags/talons etc
-	/* SPEEDCONTROLCLASS strafeFrontDrive; */
-	/* SPEEDCONTROLCLASS strafeBackDrive; */
-	Encoder *front_strafe;
-	Encoder *back_strafe;
-	SPEEDCONTROLCLASS *strafeFrontDrive;
-	SPEEDCONTROLCLASS *strafeBackDrive;
-	double strafe_speed;
-	double accumulated_error = 0.0;
-
-	Strafe(Encoder *passedfront_strafe, Encoder *passedback_strafe, SPEEDCONTROLCLASS *passedstrafeFrontDrive, SPEEDCONTROLCLASS *passedstrafeBackDrive);
-	double ReturnPIDInput();
-	void UsePIDOutput(double output);
-	/* void InitDefaultCommand(); */
-
-};
-
 class Robot: public IterativeRobot
 {
 public:
@@ -152,9 +132,9 @@ public:
 	SPEEDCONTROLCLASS strafeFrontDrive;
 	SPEEDCONTROLCLASS strafeBackDrive;
 	SPEEDCONTROLCLASS tunnel_roller_motor;
-	SPEEDCONTROLCLASS front_roller_left;
-	SPEEDCONTROLCLASS front_roller_right;
-	Servo ratchet;
+//	SPEEDCONTROLCLASS front_roller_left;
+//	SPEEDCONTROLCLASS front_roller_right;
+//	Servo ratchet;
 	SPECIALCONTROLCLASS lift;
 
 	Encoder right_drive;
@@ -163,13 +143,15 @@ public:
 	Encoder front_strafe;
 	Encoder lift_turney;
 
-	Strafe myStrafe;
+	Solenoid lift_stopper;
 
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
 	AnalogInput min_pos_switch;
 	AnalogInput max_pos_switch;
 	Timer timer;
+
+	PWM lights;
 
 	double lift_pos;
 

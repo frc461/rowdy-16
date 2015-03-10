@@ -16,9 +16,9 @@ Robot::Robot():
 	strafeFrontDrive(t_fc),
 	strafeBackDrive(t_bc),
 	tunnel_roller_motor(t_tun_rol),
-	front_roller_left(t_frl_l),
-	front_roller_right(t_frl_r),
-	ratchet(t_ratchet),
+//	front_roller_left(t_frl_l),
+//	front_roller_right(t_frl_r),
+//	ratchet(t_ratchet),
 	lift(ct_lift),
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
@@ -30,13 +30,13 @@ Robot::Robot():
 	back_strafe(dio_bu, dio_bv),
 	front_strafe(dio_fu, dio_fv),
 	lift_turney(dio_lu, dio_lv),
-	myStrafe(&front_strafe, &back_strafe, &strafeFrontDrive, &strafeBackDrive),
-	timer()
+	lift_stopper(t_stopper_can, ct_stopper),
+	timer(),
+	lights(t_lights)
 {
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
 	lift_pos = 0;
-	//myStrafe.myRobot = this;
 //	color_sensor.Write(0x00,0x00);
 }
 
@@ -54,7 +54,7 @@ void Robot::UpdateSDB() {
 	SmartDashboard::PutNumber("Back Strafe Encoder", back_strafe.Get());
 	SmartDashboard::PutNumber("Front Strafe Encoder", front_strafe.Get());
 	SmartDashboard::PutNumber("Lift Encoder", lift_turney.Get());
-	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
+//	SmartDashboard::PutNumber("Ratchet Servo", ratchet.GetAngle());
 	SmartDashboard::PutNumber("Stupid Ratchet", stupidRatchet);
 	SmartDashboard::PutNumber("Max_Pos_Switch", max_pos_switch.GetVoltage());
 	SmartDashboard::PutNumber("Min_Pos_Switch", min_pos_switch.GetVoltage());
@@ -68,6 +68,8 @@ void Robot::RobotInit()
 
 	stupidTimer = 0;
 	stupidRatchet = INITIALIZED;
+
+	lights.SetRaw(100);
 
 	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
@@ -369,7 +371,7 @@ void Robot::TeleopInit()
 	timer.Start();
 	timer.Stop();
 	stupidRatchet = 0;
-	ratchet.SetAngle(100);
+//	ratchet.SetAngle(100);
 	b_half = false;
 	f_half = false;
 }
@@ -436,7 +438,6 @@ void Robot::TeleopPeriodic()
 		myRobot.ArcadeDrive(-nt_0_y, -nt_1_x);
 		strafeFrontDrive.Set(nt_0_x);
 		strafeBackDrive.Set(-nt_0_x);
-		myStrafe.strafe_speed = nt_0_x;
 #ifndef PRACTICE
 	}
 #endif
@@ -451,7 +452,8 @@ void Robot::TeleopPeriodic()
 
 	// Lift Block
 	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
-		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
+		lift_stopper.Set(true);
+/*		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
 			timer.Reset();
 			timer.Start();
 			stupidTimer++;
@@ -468,16 +470,17 @@ void Robot::TeleopPeriodic()
 			std::cout << "Up Go" << timer.Get() << std::endl;
 			SmartDashboard::PutBoolean("Up Go", true);
 		}
-		else {
+		else {*/
 			lift.Set(1.0);
 			std::cout << "Up Run" << timer.Get() << std::endl;
 			SmartDashboard::PutBoolean("Up Run", true);
-		}
+/*		}
 		if(max_pos_switch.GetVoltage() < 0.1) {
 			ratchet.SetAngle(124);
-		}
+		}*/
 	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
-		if(stupidTimer < 10 && timer.Get() < 0.300){
+		lift_stopper.Set(true);
+/*		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
 			stupidTimer++;
@@ -492,17 +495,18 @@ void Robot::TeleopPeriodic()
 			ratchet.SetAngle(103);
 			std::cout << "Down Go" << timer.Get() << std::endl;
 			SmartDashboard::PutBoolean("Down Go", true);
-		} else {
+		} else {*/
 			lift.Set(-0.5);
 			std::cout << "Down Run" << timer.Get() << std::endl;
 			SmartDashboard::PutBoolean("Down Run", true);
-		}
+/*		}*/
 	} else {
+		lift_stopper.Set(false);
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();
 		stupidTimer = 0;
-		ratchet.SetAngle(103);
+//		ratchet.SetAngle(103);
 	}
 
 	//Tunnel Roller Block
@@ -514,7 +518,7 @@ void Robot::TeleopPeriodic()
 		tunnel_roller_motor.Set(0.0);
 
 	//Front Roller Block
-	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_in)) {
+/*	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_in)) {
 		front_roller_left.Set(1.0);
 		front_roller_right.Set(-1.0);
 	}
@@ -533,7 +537,7 @@ void Robot::TeleopPeriodic()
 	else {
 		front_roller_left.Set(0.0);
 		front_roller_right.Set(0.0);
-	}
+	}*/
 
 	UpdateSDB();
 }
@@ -545,34 +549,3 @@ void Robot::TestPeriodic()
 
 
 START_ROBOT_CLASS(Robot);
-
-Strafe::Strafe(Encoder *passedfront_strafe, Encoder *passedback_strafe, SPEEDCONTROLCLASS *passedstrafeFrontDrive, SPEEDCONTROLCLASS *passedstrafeBackDrive) : PIDSubsystem("Strafe", /* pid constants */ 1.0, 0.0, 0.0) {
-	GetPIDController()->SetContinuous(false);
-
-	// assign encoders/jags/talons etc
-	// strafeFrontDrive = Robot.strafeFrontDrive;
-	// strafeBackDrive = Robot.strafeBackDrive;
-	front_strafe = passedfront_strafe;
-	back_strafe = passedback_strafe;
-	strafeFrontDrive = passedstrafeFrontDrive;
-	strafeBackDrive = passedstrafeBackDrive;
-
-	SetSetpoint(0.0); // don't move at start
-	//Enable();
-}
-
-double Strafe::ReturnPIDInput() {
-	// returns difference between encoders
-	return front_strafe->GetRate() - back_strafe->GetRate();
-}
-
-void Strafe::UsePIDOutput(double output) {
-	accumulated_error += output;
-	if(output > 0) {
-		strafeFrontDrive->Set(strafe_speed);
-		strafeBackDrive->Set(strafe_speed - accumulated_error);
-	} else {
-		strafeFrontDrive->Set(strafe_speed - accumulated_error);
-		strafeBackDrive->Set(strafe_speed);
-	}
-}

@@ -30,7 +30,7 @@ Robot::Robot():
 	back_strafe(dio_bu, dio_bv),
 	front_strafe(dio_fu, dio_fv),
 	lift_turney(dio_lu, dio_lv),
-	lift_stopper(t_stopper_can, ct_stopper),
+	lift_stopper(ct_pcm_can, pcm_stopper_f, pcm_stopper_r),
 	timer(),
 	lights(t_lights),
 	more_lights(t_more_lights),
@@ -72,26 +72,13 @@ void Robot::RobotInit()
 	stupidRatchet = INITIALIZED;
 
 	lights.SetRaw(0);
-	more_lights.SetRaw(0);
-	and_more_lights.SetRaw(0);
+	more_lights.SetRaw(255);
+	and_more_lights.SetRaw(100);
 
 	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
 
 //pre's
-void Robot::auton_lift_down_init() {
-
-	lift_turney.Reset();
-
-	//lift
-	while((lift_turney.Get() < 500) && timer.Get() < 15.0) {
-
-		lift.Set(-1.0);
-
-	}
-
-}
-
 void Robot::auton_lift_down() {
 
 }
@@ -116,192 +103,6 @@ void Robot::auton_turn_90( bool opposite = false) {
 		}
 	}
 	myRobot.ArcadeDrive(0.0,0.0);
-}
-
-//strafe
-void Robot::auton_strafe(bool direction) {
-	SmartDashboard::PutString("Auton Strafe", "Working");
-}
-
-//forward
-void Robot::auton_forward(bool direction) {
-	SmartDashboard::PutString("Auton Forward", "Working");
-}
-
-//push both
-//place facing east centered relative to the box and directly south of it.
-void Robot::auton_push_both() {
-
-	//push stuff!
-	front_strafe.Reset();
-	back_strafe.Reset();
-
-	while ((front_strafe.Get() < 410 /*|| back_strafe.Get() > -410*/) && timer.Get() < 15.0) {
-	//	if (front_strafe.Get() < 410)
-			strafeFrontDrive.Set(0.8);
-	//	else
-	//		strafeFrontDrive.Set(0.0);
-
-	//	if (back_strafe.Get() > -410)
-			strafeBackDrive.Set(-0.8);
-	//	else
-	//		strafeBackDrive.Set(0.0);
-	}
-	strafeBackDrive.Set(0.0);
-	strafeFrontDrive.Set(0.0);
-
-	//drive back and then some
-	front_strafe.Reset();
-	back_strafe.Reset();
-
-	while ((front_strafe.Get() > -535 /*|| back_strafe.Get() < 535*/) && timer.Get() < 15.0) {
-	//	if (front_strafe.Get() > -535)
-			strafeFrontDrive.Set(-0.8);
-	//	else
-	//		strafeFrontDrive.Set(0.0);
-
-	//	if (back_strafe.Get() < 535)
-			strafeBackDrive.Set(0.8);
-	//	else
-	//		strafeBackDrive.Set(0.0);
-	}
-	strafeBackDrive.Set(0.0);
-	strafeFrontDrive.Set(0.0);
-
-	//turn 90° left
-	auton_turn_90();
-
-	//move to the container
-	//push stuff!
-	front_strafe.Reset();
-	back_strafe.Reset();
-
-	while ((front_strafe.Get() < 114 /*|| back_strafe.Get() > -114*/) && timer.Get() < 15.0) {
-	//	if (front_strafe.Get() < 410)
-			strafeFrontDrive.Set(0.8);
-	//	else
-	//		strafeFrontDrive.Set(0.0);
-
-	//	if (back_strafe.Get() > -410)
-			strafeBackDrive.Set(-0.8);
-	//	else
-	//		strafeBackDrive.Set(0.0);
-	}
-	strafeBackDrive.Set(0.0);
-	strafeFrontDrive.Set(0.0);
-
-	//move forward to the container
-	left_drive.Reset();
-	right_drive.Reset();
-
-	while((left_drive.Get() < -213)  && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(-0.8, 0.0);
-	}
-
-	myRobot.ArcadeDrive(0.0,0.0);
-
-	//lift up - pickup the tote
-	auton_lift_up();
-
-	//turn 90° right
-	auton_turn_90(true);
-
-	left_drive.Reset();
-
-	//move to the container
-	while ((front_strafe.Get() < 535 /*|| back_strafe.Get() > -535*/) && timer.Get() < 15.0) {
-	//	if (front_strafe.Get() > -410)
-			strafeFrontDrive.Set(0.8);
-	//	else
-	//		strafeFrontDrive.Set(0.0);
-
-	//	if (back_strafe.Get() < 410)
-			strafeBackDrive.Set(-0.8);
-	//	else
-	//		strafeBackDrive.Set(0.0);
-	}
-	strafeBackDrive.Set(0.0);
-	strafeFrontDrive.Set(0.0);
-
-	//	Drive forward to tote
-	/*	left_drive.Reset();
-		right_drive.Reset();
-
-		while ((left_drive.Get() > -344)  && timer.Get() < 15.0) {
-				myRobot.ArcadeDrive(0.8,0.0);
-				}*/
-
-	//	auton_lift_down();
-
-	//	auton_lift_up();
-
-
-	//	auton_lift_down();
-
-	//	auton_lift_up();
-
-	// auton_turn_90();
-
-	//	Drive Forward a lot code
-	//	Needs testing (direction)
-		/*	left_drive.Reset();
-		right_drive.Reset();
-
-		while ((left_drive.Get() < 2044 || right_drive.Get() > -2044) && timer.Get() < 15.0) {
-			myRobot.ArcadeDrive(0.8,0.0);
-				}*/
-}
-
-//push tote
-void Robot::auton_push_tote() {
-	SmartDashboard::PutString("Auton Push", "Working");
-
-	front_strafe.Reset();
-	back_strafe.Reset();
-
-	//push stuff!
-	while ((front_strafe.Get() > -410 /*|| back_strafe.Get() < 410*/) && timer.Get() < 15.0) {
-//		if (front_strafe.Get() > -410)
-			strafeFrontDrive.Set(0.8);
-//		else
-//			strafeFrontDrive.Set(0.0);
-
-//		if (back_strafe.Get() < 410)
-			strafeBackDrive.Set(-0.8);
-//		else
-//			strafeBackDrive.Set(0.0);
-		UpdateSDB();
-	}
-	strafeBackDrive.Set(0.0);
-	strafeFrontDrive.Set(0.0);
-
-	//Pick the stuffz up...
-	//	auton_lift_down_init();
-
-	//	auton_lift_up();
-
-	// Drive forward a bit...
-	// This needs more testing (Direction)
-	/*	left_drive.Reset();
-	right_drive.Reset();
-
-	while ((left_drive.Get() < 410 || right_drive.Get() > -410) && timer.Get() < 15.0) {
-			myRobot.ArcadeDrive(0.8,0.0);
-			}*/
-
-
-	//	auton_turn_90();
-
-	//Drive forward a lot of bits...
-	//This needs more testing (Direction)
-	//Same as the other 2044 one.
-	/*	left_drive.Reset();
-	right_drive.Reset();
-
-	while ((left_drive.Get() < 2044 || right_drive.Get() > -2044) && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(0.8,0.0);
-			}*/
-
 }
 
 void Robot::auton_container() {
@@ -340,17 +141,6 @@ void Robot::AutonomousInit()
 	timer.Start();
 
 	switch (AUTON) {
-	case PUSH_TOTE:
-		auton_push_tote();
-		break;
-	case FORWARD:
-		auton_forward(false);
-		break;
-	case STRAFE:
-		auton_strafe(false);
-		break;
-	case PUSH_FULL:
-		break;
 	case CONTAINER:
 		auton_container();
 		break;
@@ -456,7 +246,7 @@ void Robot::TeleopPeriodic()
 
 	// Lift Block
 	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
-		lift_stopper.Set(true);
+		lift_stopper.Set(lift_stopper.kReverse);
 /*		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
 			timer.Reset();
 			timer.Start();
@@ -483,7 +273,7 @@ void Robot::TeleopPeriodic()
 			ratchet.SetAngle(124);
 		}*/
 	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
-		lift_stopper.Set(true);
+		lift_stopper.Set(lift_stopper.kReverse);
 /*		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
@@ -505,7 +295,7 @@ void Robot::TeleopPeriodic()
 			SmartDashboard::PutBoolean("Down Run", true);
 /*		}*/
 	} else {
-		lift_stopper.Set(false);
+		lift_stopper.Set(lift_stopper.kForward);
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();

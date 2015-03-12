@@ -7,19 +7,15 @@
 
 // Set this to false to use the other auton.
 enum  auton {
-	PUSH_TOTE = 0,
-	FORWARD = 1,
-	STRAFE = 2,
-	PUSH_FULL = 3,
-	CONTAINER = 4,
-	BORING = 5
+	CONTAINER = 0,
+	BORING = 1
 };
 
 #define PRACTICE 1
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
-	#define SPECIALCONTROLCLASS Jaguar
+	#define SPECIALCONTROLCLASS CANTalon
 #else
 	#define SPEEDCONTROLCLASS Talon
 	#define SPECIALCONTROLCLASS CANTalon
@@ -47,16 +43,21 @@ enum p_w_m {
 	t_lights = 10,
 	t_more_lights = 11,
 	t_and_more_lights = 12,
-	t_stopper_can
+
 };
 
 enum can_bus {
 	#ifdef PRACTICE
-		ct_lift = 9,
+		ct_lift = 1,
 	#else
 		ct_lift = 1,
 	#endif
-	ct_stopper
+	ct_pcm_can = 2
+};
+
+enum pcm {
+	pcm_stopper_f = 0, //f = forward, r = reverse
+	pcm_stopper_r = 1
 };
 
 enum js_a_buttons {
@@ -145,10 +146,12 @@ public:
 	Encoder front_strafe;
 	Encoder lift_turney;
 
-	Solenoid lift_stopper;
+	Compressor compress;
+	DoubleSolenoid lift_stopper;
 
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
+	SendableChooser *chooser;
 	AnalogInput min_pos_switch;
 	AnalogInput max_pos_switch;
 	Timer timer;
@@ -180,13 +183,6 @@ public:
 	Robot();
 private:
 	double nullify(double n);
-
-	void auton_strafe(bool direction);
-
-	void auton_forward(bool direction );
-
-	void auton_push_both();
-	void auton_push_tote();
 
 	void auton_container();
 

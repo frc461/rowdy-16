@@ -78,18 +78,48 @@ void Robot::RobotInit()
 	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
 }
 
+void Robot::lift_brake() {
+	lift_stopper.Set(lift_stopper.kForward);
+}
+
+void Robot::lift_unbrake() {
+	lift_stopper.Set(lift_stopper.kReverse);
+}
+
 //pre's
 void Robot::auton_lift_down() {
+	lift_turney.Reset();
 
+	lift_unbrake();
+
+	while (lift_turney.Get() > -LIFT_ONE_TOTE && timer.Get() < 15.0)
+		lift.Set(-1.0);
+
+	lift_brake();
 }
 
 //moves
 void Robot::auton_lift_up() {
+	lift_turney.Reset();
+
+	lift_unbrake();
+
+	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0)
+		lift.Set(1.0);
+
+	lift_brake();
 }
 
 //moves down the lift to the 0 position from the top position
 void Robot::auton_lift_down_initial() {
+	lift_turney.Reset();
 
+	lift_unbrake();
+
+	while (lift_turney.Get() > -LIFT_FULL && timer.Get() < 15.0)
+		lift.Set(-1.0);
+
+	lift_brake();
 }
 
 // false = left; true = right
@@ -99,12 +129,12 @@ void Robot::auton_turn_90( bool opposite = false) {
 	left_drive.Reset();
 
 	if (opposite) {
-		while ((left_drive.Get() > -560 /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
+		while ((left_drive.Get() > -AUTON_TURN /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
 			myRobot.ArcadeDrive(0.0, -0.8);
 		}
 
 	} else {
-		while ((left_drive.Get() <  560 /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
+		while ((left_drive.Get() <  AUTON_TURN /*|| right_drive.Get() < 560*/) && timer.Get() < 15.0) {
 			myRobot.ArcadeDrive(0.0, 0.8);
 		}
 	}
@@ -148,7 +178,7 @@ void Robot::auton_container() {
 	}
 	myRobot.ArcadeDrive(0.0,0.0);*/
 
-	//Make the lift go up one tote lenght
+	//Make the lift go up one tote length
 	//	auton_lift_up();
 
 	//Move backwards into the auto zone
@@ -235,28 +265,28 @@ void Robot::TeleopPeriodic()
 	//functions sub-block
 #ifndef PRACTICE
 	if (f_half) {
-		if (left_drive.Get() < -114) {
+		if (left_drive.Get() < -LEFT_DRIVE) {
 			f_half = false;
 			SmartDashboard::PutBoolean("Hat Done", true);
-			myRobot.ArcadeDrive(0.0,0.0);
+			myRobot.ArcadeDrive(0.0, 0.0);
 		} else
-			myRobot.ArcadeDrive(-0.6,0.0);
+			myRobot.ArcadeDrive(-0.6, 0.0);
 	} else if (b_half)  {
-		if (left_drive.Get() > 114) {
+		if (left_drive.Get() > LEFT_DRIVE) {
 			b_half = false;
 			SmartDashboard::PutBoolean("Hat Done", true);
-			myRobot.ArcadeDrive(0.0,0.0);
+			myRobot.ArcadeDrive(0.0, 0.0);
 		} else
-			myRobot.ArcadeDrive(0.6,0.0);
+			myRobot.ArcadeDrive(0.6, 0.0);
 	} else if(stick0.GetRawButton(js_a_f_half)) {
 		f_half = 1;
 		left_drive.Reset();
-		myRobot.ArcadeDrive(-0.6,0.0);
+		myRobot.ArcadeDrive(-0.6, 0.0);
 		SmartDashboard::PutBoolean("Hat", true);
 	} else if(stick0.GetRawButton(js_a_b_half)) {
 		b_half = 1;
 		left_drive.Reset();
-		myRobot.ArcadeDrive(0.6,0.0);
+		myRobot.ArcadeDrive(0.6, 0.0);
 		SmartDashboard::PutBoolean("Hat", true);
 	} else {
 #endif
@@ -268,6 +298,26 @@ void Robot::TeleopPeriodic()
 	}
 #endif
 
+	if (lift_working) {
+		if (lift_turney.Get() < -LIFT_ONE_TOTE) {
+			lift_turney.Reset();
+			lift_working = false;
+			lift.Set(0.0);
+		} else if (lift_turney.Get() > LIFT_ONE_TOTE) {
+			lift_turney.Reset();
+			lift_working = false;
+			lift.Set(0.0);
+		}
+	} else if (stick1.GetRawButton(a_lift_up)) {
+		lift_working = true;
+		lift_turney.Reset();
+		lift.Set(1.0);
+	} else if (stick1.GetRawButton(a_lift_down)) {
+		lift_working = true;
+		lift_turney.Reset();
+		lift.Set(-1.0);
+	}
+
 	SmartDashboard::PutBoolean("b_half", b_half);
 	SmartDashboard::PutBoolean("f_half", f_half);
 
@@ -278,7 +328,7 @@ void Robot::TeleopPeriodic()
 
 	// Lift Block
 	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
-		lift_stopper.Set(lift_stopper.kReverse);
+		lift_unbrake();
 /*		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
 			timer.Reset();
 			timer.Start();
@@ -305,7 +355,7 @@ void Robot::TeleopPeriodic()
 			ratchet.SetAngle(124);
 		}*/
 	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
-		lift_stopper.Set(lift_stopper.kReverse);
+		lift_unbrake();
 /*		if(stupidTimer < 10 && timer.Get() < 0.300){
 			timer.Reset();
 			timer.Start();
@@ -327,7 +377,7 @@ void Robot::TeleopPeriodic()
 			SmartDashboard::PutBoolean("Down Run", true);
 /*		}*/
 	} else {
-		lift_stopper.Set(lift_stopper.kForward);
+		lift_brake();
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();

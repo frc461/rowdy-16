@@ -42,7 +42,7 @@ enum p_w_m {
 	t_tun_rol = 7,
 	t_lights = 10,
 	t_more_lights = 11,
-	t_and_more_lights = 12,
+	t_and_more_lights = 12
 
 };
 
@@ -86,7 +86,8 @@ enum cs_a_buttons {
 	a_f_rol_rotate_right = 10,
 	a_f_rol_in = 12,
 	a_f_rol_out = 11,
-	a_twitch = 1
+	a_lift_up = 1,
+	a_lift_down = 2
 };
 
 enum cs_b_buttons {
@@ -116,6 +117,13 @@ enum positions {
 	INITIALIZED,
 	UP,
 	DOWN
+};
+
+enum encoder_values {
+	LEFT_DRIVE = 114,
+	LIFT_ONE_TOTE = 72,
+	LIFT_FULL = 144,
+	AUTON_TURN = 560
 };
 
 
@@ -179,6 +187,7 @@ public:
 
 	bool b_half;
 	bool f_half;
+	bool lift_working;
 
 	Robot();
 private:
@@ -198,6 +207,9 @@ private:
 	void TeleopPeriodic();
 	void TestPeriodic();
 	void UpdateSDB();
+
+	void lift_brake();
+	void lift_unbrake();
 
 };
 

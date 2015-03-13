@@ -83,7 +83,13 @@ void Robot::auton_lift_down() {
 
 }
 
+//moves
 void Robot::auton_lift_up() {
+}
+
+//moves down the lift to the 0 position from the top position
+void Robot::auton_lift_down_initial() {
+
 }
 
 // false = left; true = right
@@ -105,29 +111,55 @@ void Robot::auton_turn_90( bool opposite = false) {
 	myRobot.ArcadeDrive(0.0,0.0);
 }
 
+//About this auton...
+//Placement: on the step facing the container in line with the container.
+//Remember: Smart Dashboard doesn't work on the driver user of the driver's station laptop.
+//TO DO:
+// - We need to write the code for auton_lift_down_initial and auton_lift_up and auton_lift_down.
+//   - Test all of these functions in auton.
+//     - Figure out which signs correspond to which direction on the encoder (do this in teleop).
+//     - Figure out the encoder counts to move the lift all the way down from the top (in teleop). Write auton_lift_down_initial and test(in auton).
+//     - Figure out the encoder counts to move the lift down/up one (in teleop). Write auton_lift_up and auton_lift_down (in auton).
+//     - Remember to fire/unfire the lift_stopper in that code, take note that the lift_stopper's class has changed.
+//   - *Related teleop stuff to write before proceeding*
+//     - Talk to Kam about which buttons he wants for auton_lift_up and auton_lift_down.
+//     - Write a function like the hat driving button functions that runs auton_lift_up and auton_lift_down SIMILAR CODE. Don't make actual function calls, just write similar code. You can model the code after the HAT driving code. (If you don't know what I'm talking about just ask Garret or Nik. They can explain to you what I'm talking about.)
+// - You need to test all of the movement code for this auton not on the ground. If I wrote a sign error it won't stop moving until 15 seconds into the run, and you don't want to do that on the floor. Uncomment the movement code and make sure I wasn't stupid is basically all you have to do.
+// - You need to test all of the movement code for this auton on the ground. See if everything works together.
+// - Fix my mistakes because y'al are good at doing things and I couldn't test any of this stuff.
+// - Delete this todo list! Thanks for doing these things Sam you're the best.
+
 void Robot::auton_container() {
 
-	left_drive.Reset();
+	//Backup so that we can lower the tusks
+	/*	left_drive.Reset();
+	while((left_drive.Get() < 668)  && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.8, 0.0);
+	}
+	myRobot.ArcadeDrive(0.0,0.0);*/
 
-	while((left_drive.Get() < -213)  && timer.Get() < 15.0) {
+	//Make the lift go down to it's lowest point from it's highest
+	auton_lift_down_initial();
+
+	//Drive forward up to the container
+	/*	left_drive.Reset()
+	while((left_drive.Get() > -213)  && timer.Get() < 15.0) {
 		myRobot.ArcadeDrive(-0.8, 0.0);
 	}
+	myRobot.ArcadeDrive(0.0,0.0);*/
 
-	myRobot.ArcadeDrive(0.0,0.0);
+	//Make the lift go up one tote lenght
+	//	auton_lift_up();
 
-	auton_lift_up();
-
-	auton_turn_90(true);
-
-	left_drive.Reset();
-
-	while((left_drive.Get() < -2044) && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(-0.6, 0.0);
+	//Move backwards into the auto zone
+	/*	left_drive.Reset();
+	while((left_drive.Get() < 1337) && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.6, 0.0);
 	}
+	myRobot.ArcadeDrive(0.0,0.0);*/
 
-	myRobot.ArcadeDrive(0.0,0.0);
-
-	auton_turn_90();
+	//Turn so that we fit.
+	//	auton_turn_90();
 
 }
 

@@ -186,7 +186,7 @@ private:
 
 	void auton_container();
 
-	void auton_lift_down_init();
+	void auton_lift_down_initial();
 	void auton_lift_down();
 	void auton_lift_up();
 	void auton_turn_90(bool opposite);

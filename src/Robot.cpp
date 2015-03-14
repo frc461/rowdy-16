@@ -197,8 +197,7 @@ void Robot::AutonomousInit()
 {
 #ifndef PRACTICE
 
-	int AUTON = BORING; //SmartDashboard::GetNumber("AUTON");
-//	const int AUTON = STRAFE;
+	int AUTON = BORING;
 
 	timer.Start();
 
@@ -227,7 +226,6 @@ void Robot::TeleopInit()
 	timer.Start();
 	timer.Stop();
 	stupidRatchet = 0;
-//	ratchet.SetAngle(100);
 	b_half = false;
 	f_half = false;
 }
@@ -240,8 +238,6 @@ void Robot::TeleopPeriodic()
 	raw_1_x = stick1.GetX();
 	raw_0_y = stick0.GetY();
 	raw_1_y = stick1.GetY();
-
-	//drive_speed_ain_value = ds->GetAnalogIn(2);
 
 	//create modified values
 	nt_0_x = nullify(raw_0_x) * ((stick0.GetRawButton(js_a_slow_down)) ? 0.75 : 1.0);
@@ -321,68 +317,26 @@ void Robot::TeleopPeriodic()
 	SmartDashboard::PutBoolean("b_half", b_half);
 	SmartDashboard::PutBoolean("f_half", f_half);
 
-
 	SmartDashboard::PutBoolean("Down Run", false);
 	SmartDashboard::PutBoolean("Up Run", false);
-	//std::cout << timer.Get() << std::endl;
 
 	// Lift Block
 	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
 		lift_unbrake();
-/*		if(stupidTimer < 10 && timer.Get() < ((control_system_a.GetRawButton(a_twitch)) ? 0.500 : 0.300)){
-			timer.Reset();
-			timer.Start();
-			stupidTimer++;
-			ratchet.SetAngle(71.5);
-			lift.Set(((control_system_a.GetRawButton(a_twitch)) ? -0.600 : -0.400));//-0.4);
-			std::cout << "Up Twitch" << std::endl;
-			SmartDashboard::PutBoolean("Up Twitch", true);
-		}
-		else if(stupidTimer > 10 && timer.Get() > 0.300) {
-			timer.Stop();
-			stupidTimer = 0;
-			stupidRatchet = UP;
-			ratchet.SetAngle(103);
-			std::cout << "Up Go" << timer.Get() << std::endl;
-			SmartDashboard::PutBoolean("Up Go", true);
-		}
-		else {*/
-			lift.Set(1.0);
-			std::cout << "Up Run" << timer.Get() << std::endl;
-			SmartDashboard::PutBoolean("Up Run", true);
-/*		}
-		if(max_pos_switch.GetVoltage() < 0.1) {
-			ratchet.SetAngle(124);
-		}*/
+		lift.Set(1.0);
+		std::cout << "Up Run" << timer.Get() << std::endl;
+		SmartDashboard::PutBoolean("Up Run", true);
 	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
 		lift_unbrake();
-/*		if(stupidTimer < 10 && timer.Get() < 0.300){
-			timer.Reset();
-			timer.Start();
-			stupidTimer++;
-			ratchet.SetAngle(124);
-			lift.Set(((control_system_a.GetRawButton(a_twitch)) ? 0.600 : 0.400));//0.4);
-			std::cout << "Down Twitch" << std::endl;
-			SmartDashboard::PutBoolean("Down Twitch", true);
-		} else if(stupidTimer > 10 && timer.Get() > 0.300) {
-			timer.Stop();
-			stupidTimer = 0;
-			stupidRatchet = DOWN;
-			ratchet.SetAngle(103);
-			std::cout << "Down Go" << timer.Get() << std::endl;
-			SmartDashboard::PutBoolean("Down Go", true);
-		} else {*/
-			lift.Set(-0.5);
-			std::cout << "Down Run" << timer.Get() << std::endl;
-			SmartDashboard::PutBoolean("Down Run", true);
-/*		}*/
+		lift.Set(-0.5);
+		std::cout << "Down Run" << timer.Get() << std::endl;
+		SmartDashboard::PutBoolean("Down Run", true);
 	} else {
 		lift_brake();
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();
 		stupidTimer = 0;
-//		ratchet.SetAngle(103);
 	}
 
 	//Tunnel Roller Block
@@ -392,28 +346,6 @@ void Robot::TeleopPeriodic()
 		tunnel_roller_motor.Set(-1.0);
 	else
 		tunnel_roller_motor.Set(0.0);
-
-	//Front Roller Block
-/*	if (((stick1.GetRawButton(js_b_f_rol_in)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_in)) {
-		front_roller_left.Set(1.0);
-		front_roller_right.Set(-1.0);
-	}
-	else if (((stick1.GetRawButton(js_b_f_rol_out)) && !(stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_out)) {
-		front_roller_left.Set(-1.0);
-		front_roller_right.Set(1.0);
-	}
-	else if (((stick1.GetRawButton(js_b_f_rol_in)) && (stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_rotate_right)) {
-			front_roller_left.Set(1.0);
-			front_roller_right.Set(1.0);
-	}
-	else if (((stick1.GetRawButton(js_b_f_rol_out)) && (stick1.GetRawButton(1))) || control_system_a.GetRawButton(a_f_rol_rotate_left) ) {
-			front_roller_left.Set(-1.0);
-			front_roller_right.Set(-1.0);
-	}
-	else {
-		front_roller_left.Set(0.0);
-		front_roller_right.Set(0.0);
-	}*/
 
 	UpdateSDB();
 }

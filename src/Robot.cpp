@@ -31,6 +31,7 @@ Robot::Robot():
 	front_strafe(dio_fu, dio_fv),
 	lift_turney(dio_lu, dio_lv),
 	lift_stopper(ct_pcm_can, pcm_stopper_f, pcm_stopper_r),
+	totes_grabber(ct_pcm_can, pcm_grabber_f, pcm_grabber_r),
 	timer(),
 	lights(t_lights),
 	more_lights(t_more_lights),
@@ -75,7 +76,14 @@ void Robot::RobotInit()
 	more_lights.SetRaw(255);
 	and_more_lights.SetRaw(100);
 
-	//SmartDashboard::GetNumber("AUTON (0: Push, 1: FORWARD, 2: STRAFE, 3: ANGLE)");
+	auton_chooser = new SendableChooser();
+	//auton_chooser->AddDefault("Boring auto", &BORING);
+	//void (Robot::*func)();
+	//func = &Robot::auton_container;
+	//auton_chooser->AddObject("Container", &func);
+
+	AUTON = SmartDashboard::GetNumber("AUTON", -1);
+	SmartDashboard::PutString("Incoming", "Something incoming");
 }
 
 void Robot::lift_brake() {
@@ -197,7 +205,8 @@ void Robot::AutonomousInit()
 {
 #ifndef PRACTICE
 
-	int AUTON = BORING;
+	//int AUTON = CONTAINER;//auton_chooser->GetSelected();
+	AUTON = SmartDashboard::GetNumber("AUTON", -1);
 
 	timer.Start();
 
@@ -218,7 +227,6 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-
 }
 
 void Robot::TeleopInit()
@@ -295,6 +303,7 @@ void Robot::TeleopPeriodic()
 #endif
 
 	if (lift_working) {
+		//totes_grabber.Set(totes_grabber.kForward);
 		if (lift_turney.Get() < -LIFT_ONE_TOTE) {
 			lift_turney.Reset();
 			lift_working = false;
@@ -306,10 +315,12 @@ void Robot::TeleopPeriodic()
 		}
 	} else if (stick1.GetRawButton(a_lift_up)) {
 		lift_working = true;
+		//totes_grabber.Set(totes_grabber.kForward);
 		lift_turney.Reset();
 		lift.Set(1.0);
 	} else if (stick1.GetRawButton(a_lift_down)) {
 		lift_working = true;
+		//totes_grabber.Set(totes_grabber.kForward);
 		lift_turney.Reset();
 		lift.Set(-1.0);
 	}
@@ -323,21 +334,30 @@ void Robot::TeleopPeriodic()
 	// Lift Block
 	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
 		lift_unbrake();
+		//totes_grabber.Set(totes_grabber.kForward);
 		lift.Set(1.0);
 		std::cout << "Up Run" << timer.Get() << std::endl;
 		SmartDashboard::PutBoolean("Up Run", true);
 	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
 		lift_unbrake();
+		//totes_grabber.Set(totes_grabber.kForward);
 		lift.Set(-0.5);
 		std::cout << "Down Run" << timer.Get() << std::endl;
 		SmartDashboard::PutBoolean("Down Run", true);
 	} else {
 		lift_brake();
+		//totes_grabber.Set(totes_grabber.kReverse);
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();
 		stupidTimer = 0;
 	}
+
+	// TODO: LOOK AT THIS!
+	if (control_system_a.GetRawButton(3))
+		totes_grabber.Set(totes_grabber.kForward);
+	else if (control_system_a.GetRawButton(4))
+		totes_grabber.Set(totes_grabber.kReverse);
 
 	//Tunnel Roller Block
 	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))

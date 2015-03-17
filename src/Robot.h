@@ -11,7 +11,7 @@ enum  auton {
 	BORING = 1
 };
 
-#define PRACTICE 1
+//#define PRACTICE 1
 
 #ifdef PRACTICE
 	#define SPEEDCONTROLCLASS Jaguar
@@ -57,7 +57,9 @@ enum can_bus {
 
 enum pcm {
 	pcm_stopper_f = 0, //f = forward, r = reverse
-	pcm_stopper_r = 1
+	pcm_stopper_r = 1,
+	pcm_grabber_f = 2,
+	pcm_grabber_r = 3
 };
 
 enum js_a_buttons {
@@ -156,6 +158,7 @@ public:
 
 	Compressor compress;
 	DoubleSolenoid lift_stopper;
+	DoubleSolenoid totes_grabber;
 
 	RobotDrive myRobot; // robot drive system
 	LiveWindow *lw;
@@ -167,6 +170,8 @@ public:
 	PWM lights;
 	PWM more_lights;
 	PWM and_more_lights;
+
+	SendableChooser *auton_chooser;
 
 	double lift_pos;
 
@@ -188,6 +193,8 @@ public:
 	bool b_half;
 	bool f_half;
 	bool lift_working;
+
+	int AUTON;
 
 	Robot();
 private:

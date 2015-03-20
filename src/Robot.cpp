@@ -23,6 +23,7 @@ Robot::Robot():
 	myRobot(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive),
 	lw(NULL),
 //	color_sensor(I2C::kOnboard, color),
+	// bottom
 	min_pos_switch(an_bot_switch),
 	max_pos_switch(an_top_switch),
 	right_drive(dio_rdu, dio_rdv),
@@ -40,6 +41,8 @@ Robot::Robot():
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
 	lift_pos = 0;
+	// TODO: Grab value from solenoid.
+	gripping = true;
 //	color_sensor.Write(0x00,0x00);
 }
 
@@ -83,7 +86,6 @@ void Robot::RobotInit()
 	//auton_chooser->AddObject("Container", &func);
 
 	AUTON = SmartDashboard::GetNumber("AUTON", -1);
-	SmartDashboard::PutString("Incoming", "Something incoming");
 }
 
 void Robot::lift_brake() {
@@ -101,7 +103,10 @@ void Robot::auton_lift_down() {
 	lift_unbrake();
 
 	while (lift_turney.Get() > -LIFT_ONE_TOTE && timer.Get() < 15.0)
-		lift.Set(-1.0);
+	{
+		lift.Set(-0.7);
+	}
+	lift.Set(0.0);
 
 	lift_brake();
 }
@@ -113,7 +118,10 @@ void Robot::auton_lift_up() {
 	lift_unbrake();
 
 	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0)
-		lift.Set(1.0);
+	{
+		lift.Set(0.7);
+	}
+	lift.Set(0.0);
 
 	lift_brake();
 }
@@ -125,7 +133,10 @@ void Robot::auton_lift_down_initial() {
 	lift_unbrake();
 
 	while (lift_turney.Get() > -LIFT_FULL && timer.Get() < 15.0)
-		lift.Set(-1.0);
+	{
+		lift.Set(-0.7);
+	}
+	lift.Set(0.0);
 
 	lift_brake();
 }
@@ -170,34 +181,40 @@ void Robot::auton_turn_90( bool opposite = false) {
 void Robot::auton_container() {
 
 	//Backup so that we can lower the tusks
-	/*	left_drive.Reset();
+	left_drive.Reset();
 	while((left_drive.Get() < 668)  && timer.Get() < 15.0) {
 		myRobot.ArcadeDrive(0.8, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);*/
+	myRobot.ArcadeDrive(0.0,0.0);
+
+	Wait(0.2);
 
 	//Make the lift go down to it's lowest point from it's highest
 	auton_lift_down_initial();
 
+	Wait(0.2);
 	//Drive forward up to the container
-	/*	left_drive.Reset()
+	left_drive.Reset();
 	while((left_drive.Get() > -213)  && timer.Get() < 15.0) {
 		myRobot.ArcadeDrive(-0.8, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);*/
+	myRobot.ArcadeDrive(0.0,0.0);
 
+	Wait(0.2);
 	//Make the lift go up one tote length
-	//	auton_lift_up();
+	auton_lift_up();
 
+	Wait(0.2);
 	//Move backwards into the auto zone
-	/*	left_drive.Reset();
+	left_drive.Reset();
 	while((left_drive.Get() < 1337) && timer.Get() < 15.0) {
 		myRobot.ArcadeDrive(0.6, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);*/
+	myRobot.ArcadeDrive(0.0,0.0);
 
+	Wait(0.2);
 	//Turn so that we fit.
-	//	auton_turn_90();
+	auton_turn_90();
 
 }
 
@@ -206,7 +223,7 @@ void Robot::AutonomousInit()
 #ifndef PRACTICE
 
 	//int AUTON = CONTAINER;//auton_chooser->GetSelected();
-	AUTON = SmartDashboard::GetNumber("AUTON", -1);
+	AUTON = SmartDashboard::GetNumber("AUTON", BORING);
 
 	timer.Start();
 
@@ -223,6 +240,11 @@ void Robot::AutonomousInit()
 	}
 
 #endif
+
+	Wait(0.2);
+
+	// Close the gripper thing.
+	totes_grabber.Set(totes_grabber.kForward);
 }
 
 void Robot::AutonomousPeriodic()
@@ -303,7 +325,6 @@ void Robot::TeleopPeriodic()
 #endif
 
 	if (lift_working) {
-		//totes_grabber.Set(totes_grabber.kForward);
 		if (lift_turney.Get() < -LIFT_ONE_TOTE) {
 			lift_turney.Reset();
 			lift_working = false;
@@ -315,12 +336,10 @@ void Robot::TeleopPeriodic()
 		}
 	} else if (stick1.GetRawButton(a_lift_up)) {
 		lift_working = true;
-		//totes_grabber.Set(totes_grabber.kForward);
 		lift_turney.Reset();
 		lift.Set(1.0);
 	} else if (stick1.GetRawButton(a_lift_down)) {
 		lift_working = true;
-		//totes_grabber.Set(totes_grabber.kForward);
 		lift_turney.Reset();
 		lift.Set(-1.0);
 	}
@@ -332,40 +351,45 @@ void Robot::TeleopPeriodic()
 	SmartDashboard::PutBoolean("Up Run", false);
 
 	// Lift Block
-	if ((control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
+	if (!gripping && (control_system_b.GetRawButton(b_lift_up) /*|| stick0.GetRawButton(js_a_lift_up)*/) && (max_pos_switch.GetVoltage() > 0.1)) {
 		lift_unbrake();
-		//totes_grabber.Set(totes_grabber.kForward);
 		lift.Set(1.0);
-		std::cout << "Up Run" << timer.Get() << std::endl;
+		//std::cout << "Up Run" << timer.Get() << std::endl;
 		SmartDashboard::PutBoolean("Up Run", true);
-	}else if ((control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
+	}else if (!gripping && (control_system_b.GetRawButton(b_lift_down) /*|| stick0.GetRawButton(js_a_lift_down)*/) /*&& (min_pos_switch.GetVoltage() > .1)*/) {
 		lift_unbrake();
-		//totes_grabber.Set(totes_grabber.kForward);
 		lift.Set(-0.5);
-		std::cout << "Down Run" << timer.Get() << std::endl;
+		//std::cout << "Down Run" << timer.Get() << std::endl;
 		SmartDashboard::PutBoolean("Down Run", true);
 	} else {
 		lift_brake();
-		//totes_grabber.Set(totes_grabber.kReverse);
 		lift.Set(0.0);
 		timer.Stop();
 		timer.Reset();
 		stupidTimer = 0;
 	}
 
-	// TODO: LOOK AT THIS!
-	if (control_system_a.GetRawButton(3))
+	if (control_system_a.GetRawButton(a_totes_close)) {
+		gripping = true;
+	} else if (control_system_a.GetRawButton(a_totes_open)) {
+		gripping = false;
+	}
+
+	if (gripping)
 		totes_grabber.Set(totes_grabber.kForward);
-	else if (control_system_a.GetRawButton(4))
+	else
 		totes_grabber.Set(totes_grabber.kReverse);
 
 	//Tunnel Roller Block
 	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))
 		tunnel_roller_motor.Set(1.0);
 	else if (control_system_a.GetRawButton(a_tun_rol_out) || stick0.GetRawButton(js_a_tun_roller_out))
-		tunnel_roller_motor.Set(-1.0);
+		tunnel_roller_motor.Set(-0.75);
 	else
 		tunnel_roller_motor.Set(0.0);
+
+	if (min_pos_switch.GetVoltage() > 4)
+		lift_turney.Reset();
 
 	UpdateSDB();
 }

@@ -47,11 +47,7 @@ enum p_w_m {
 };
 
 enum can_bus {
-	#ifdef PRACTICE
-		ct_lift = 1,
-	#else
-		ct_lift = 1,
-	#endif
+	ct_lift = 1,
 	ct_pcm_can = 2
 };
 
@@ -86,10 +82,10 @@ enum cs_a_buttons {
 	a_tun_rol_out = 7,
 	a_f_rol_rotate_left = 9,
 	a_f_rol_rotate_right = 10,
-	a_f_rol_in = 12,
-	a_f_rol_out = 11,
 	a_lift_up = 1,
-	a_lift_down = 2
+	a_lift_down = 2,
+	a_totes_close = 12,
+	a_totes_open = 11
 };
 
 enum cs_b_buttons {
@@ -123,8 +119,8 @@ enum positions {
 
 enum encoder_values {
 	LEFT_DRIVE = 114,
-	LIFT_ONE_TOTE = 72,
-	LIFT_FULL = 144,
+	LIFT_ONE_TOTE = 2800,
+	LIFT_FULL = 5600,
 	AUTON_TURN = 560
 };
 
@@ -193,6 +189,7 @@ public:
 	bool b_half;
 	bool f_half;
 	bool lift_working;
+	bool gripping;
 
 	int AUTON;
 

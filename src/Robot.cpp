@@ -118,7 +118,10 @@ void Robot::auton_lift_up() {
 
 	lift_unbrake();
 
-	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0)
+	float current = timer.Get();
+
+	// 2.0 might change!  only there because encoders were being stupid.
+	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0 && timer.Get() - current < 2.0)
 	{
 		lift.Set(0.7);
 	}
@@ -224,10 +227,11 @@ void Robot::AutonomousInit()
 #ifndef PRACTICE
 
 	//int AUTON = CONTAINER;//auton_chooser->GetSelected();
-	AUTON = SmartDashboard::GetNumber("AUTON", CONTAINER);
+	//AUTON = SmartDashboard::GetNumber("AUTON", CONTAINER);
+	AUTON = CONTAINER;
 
 	timer.Start();
-
+	SmartDashboard::PutNumber("Auton Value", AUTON);
 	switch (AUTON) {
 	case CONTAINER:
 		auton_container();
@@ -238,6 +242,8 @@ void Robot::AutonomousInit()
 		}
 		auton_turn_90();
 		break;
+	default:
+		SmartDashboard::PutNumber("Auton Value", -1);
 	}
 
 #endif
@@ -250,6 +256,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+
 }
 
 void Robot::TeleopInit()

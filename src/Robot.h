@@ -119,7 +119,7 @@ enum positions {
 
 enum encoder_values {
 	LEFT_DRIVE = 114,
-	LIFT_ONE_TOTE = 2200,
+	LIFT_ONE_TOTE = 2700,
 	LIFT_FULL = 6700,
 	AUTON_TURN = 560
 };

@@ -89,6 +89,7 @@ void Robot::RobotInit()
 }
 
 void Robot::lift_brake() {
+	lift.Set(0.0);
 	lift_stopper.Set(lift_stopper.kForward);
 }
 
@@ -182,10 +183,10 @@ void Robot::auton_container() {
 
 	//Backup so that we can lower the tusks
 	left_drive.Reset();
-	while((left_drive.Get() < 668)  && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(0.8, 0.0);
+	while((left_drive.Get() < 288)  && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.68, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);
+	myRobot.ArcadeDrive(0.0, 0.0);
 
 	Wait(0.2);
 
@@ -195,10 +196,10 @@ void Robot::auton_container() {
 	Wait(0.2);
 	//Drive forward up to the container
 	left_drive.Reset();
-	while((left_drive.Get() > -213)  && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(-0.8, 0.0);
+	while((left_drive.Get() > -408)  && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(-0.58, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);
+	myRobot.ArcadeDrive(0.0, 0.0);
 
 	Wait(0.2);
 	//Make the lift go up one tote length
@@ -207,10 +208,10 @@ void Robot::auton_container() {
 	Wait(0.2);
 	//Move backwards into the auto zone
 	left_drive.Reset();
-	while((left_drive.Get() < 1337) && timer.Get() < 15.0) {
-		myRobot.ArcadeDrive(0.6, 0.0);
+	while((left_drive.Get() < 1137) && timer.Get() < 15.0) {
+		myRobot.ArcadeDrive(0.68, 0.0);
 	}
-	myRobot.ArcadeDrive(0.0,0.0);
+	myRobot.ArcadeDrive(0.0, 0.0);
 
 	Wait(0.2);
 	//Turn so that we fit.
@@ -223,7 +224,7 @@ void Robot::AutonomousInit()
 #ifndef PRACTICE
 
 	//int AUTON = CONTAINER;//auton_chooser->GetSelected();
-	AUTON = SmartDashboard::GetNumber("AUTON", BORING);
+	AUTON = SmartDashboard::GetNumber("AUTON", CONTAINER);
 
 	timer.Start();
 
@@ -382,9 +383,9 @@ void Robot::TeleopPeriodic()
 
 	//Tunnel Roller Block
 	if (control_system_a.GetRawButton(a_tun_rol_in) || stick0.GetRawButton(js_a_tun_roller_in))
-		tunnel_roller_motor.Set(1.0);
+		tunnel_roller_motor.Set(0.75);
 	else if (control_system_a.GetRawButton(a_tun_rol_out) || stick0.GetRawButton(js_a_tun_roller_out))
-		tunnel_roller_motor.Set(-0.75);
+		tunnel_roller_motor.Set(-1.0);
 	else
 		tunnel_roller_motor.Set(0.0);
 

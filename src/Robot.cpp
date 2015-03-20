@@ -133,7 +133,7 @@ void Robot::auton_lift_down_initial() {
 
 	lift_unbrake();
 
-	while (lift_turney.Get() > -LIFT_FULL && timer.Get() < 15.0)
+	while (lift_turney.Get() > -LIFT_FULL && timer.Get() < 15.0 && min_pos_switch.GetVoltage() < 4)
 	{
 		lift.Set(-0.7);
 	}

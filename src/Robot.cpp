@@ -41,7 +41,6 @@ Robot::Robot():
 	myRobot.SetExpiration(0.1);
 	SmartDashboard::init();
 	lift_pos = 0;
-	// TODO: Grab value from solenoid.
 	gripping = true;
 //	color_sensor.Write(0x00,0x00);
 }
@@ -120,8 +119,8 @@ void Robot::auton_lift_up() {
 
 	float current = timer.Get();
 
-	// 2.0 might change!  only there because encoders were being stupid.
-	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0 && timer.Get() - current < 2.0)
+	// 1.2 might change!  only there because encoders were being stupid.
+	while (lift_turney.Get() < LIFT_ONE_TOTE && timer.Get() < 15.0 && timer.Get() - current < 1.2)
 	{
 		lift.Set(0.7);
 	}
@@ -228,7 +227,7 @@ void Robot::AutonomousInit()
 
 	//int AUTON = CONTAINER;//auton_chooser->GetSelected();
 	//AUTON = SmartDashboard::GetNumber("AUTON", CONTAINER);
-	AUTON = CONTAINER;
+	AUTON = min_pos_switch.GetVoltage() < 4 ? CONTAINER : BORING;
 
 	timer.Start();
 	SmartDashboard::PutNumber("Auton Value", AUTON);

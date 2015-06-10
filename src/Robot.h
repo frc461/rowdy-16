@@ -117,12 +117,11 @@ enum positions {
 	DOWN
 };
 
-enum encoder_values {
-	LEFT_DRIVE = 114,
-	LIFT_ONE_TOTE = 2700,
-	LIFT_FULL = 6700,
-	AUTON_TURN = 560
-};
+// Define the constants
+#define	LEFT_DRIVE 114
+#define	LIFT_ONE_TOTE 2700
+#define	LIFT_FULL 7300
+#define	AUTON_TURN 320
 
 
 class Robot: public IterativeRobot
@@ -190,6 +189,8 @@ public:
 	bool f_half;
 	bool lift_working;
 	bool gripping;
+
+	bool auton_done;
 
 	int AUTON;
 
